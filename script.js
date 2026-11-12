@@ -1,688 +1,1200 @@
-(() => {
-  // Constants: 1 pica = 12px -> 45p x 60p single-page sheet (540px x 720px)
-  const PICA = 12;
-  const PAGE_PICAS_W = 45;
-  const PAGE_PICAS_H = 60;
-  const PAGE_W = PAGE_PICAS_W * PICA; // 540
-  const PAGE_H = PAGE_PICAS_H * PICA; // 720
-  const MIN_W = 3 * PICA; // 3 picas
-  const MIN_H = 2 * PICA; // 2 picas
+/* =====================================================================
+           CONSTANTS & 45p × 60p SINGLE-PAGE PRESETS
+           1 pica (1p) = 12px
+           Sheet Width:  45p = 540px (3p margin inset -> live width 39p = 468px, x: 36..504)
+           Sheet Height: 60p = 720px (3p margin inset -> live height 54p = 648px, y: 36..684)
+           ===================================================================== */
+        const SHEET_WIDTH = 540;   // 45p
+        const SHEET_HEIGHT = 720;  // 60p
+        const PICA_PX = 12;
 
-  const TYPE_META = {
-    photo: {
-      badge: "PHOTO BOX",
-      defaultLabel: "PHOTO: Candid / Portrait",
-      wpBlock: "Image / Cover Block",
-      defaultW: 18 * PICA,
-      defaultH: 15 * PICA,
-    },
-    text: {
-      badge: "TEXT COLUMN",
-      defaultLabel: "COPY: Body Column",
-      wpBlock: "Paragraph / Columns Block",
-      defaultW: 18 * PICA,
-      defaultH: 20 * PICA,
-    },
-    headline: {
-      badge: "HEADLINE",
-      defaultLabel: "HEADLINE: Feature Title",
-      wpBlock: "Heading Block (H1/H2)",
-      defaultW: 39 * PICA,
-      defaultH: 4 * PICA,
-    },
-    caption: {
-      badge: "CAPTION / FOLIO",
-      defaultLabel: "CAPTION: Photo Cutline",
-      wpBlock: "Caption / Quote Block",
-      defaultW: 18 * PICA,
-      defaultH: 4 * PICA,
-    },
-    sticky: {
-      badge: "STICKY NOTE",
-      defaultLabel: "Personal Note",
-      wpBlock: "Excluded from Wireframe",
-      defaultW: 14 * PICA,
-      defaultH: 11 * PICA,
-    },
-  };
+        const PAGE_PRESETS = {
+            feature: [
+                { id: 1, type: 'photo', x: 10,  y: 36,  w: 520, h: 179, label: 'Hero Photo', imageURL: 'assets/hero-banner.jpg'},
+                { id: 2, type: 'photo', x: 48,  y: 230, w: 180, h: 452,  label: 'Woman with Wreath', imageURL: 'assets/hero-vertical.jpg' },
+                { id: 3, type: 'photo', x: 250, y: 442, w: 240, h: 240,  label: 'Photo Grid', imageURL: 'assets/hero-grid.jpg' },
+                { id: 5, type: 'text',  x: 250,  y: 230, w: 240, h: 200, label: 'Body Copy' },
+            ],
+            club: [
+                { id: 1, type: 'headline', x: 36,  y: 36,  w: 468, h: 48,  label: 'CAMPUS CHRONICLE & REVIEW' },
+                { id: 2, type: 'rule',     x: 36,  y: 90,  w: 468, h: 18,  label: 'Header Divider Rule' },
+                { id: 3, type: 'photo',    x: 36,  y: 120, w: 468, h: 216, label: 'Group Photo: Editorial Board' },
+                { id: 4, type: 'caption',  x: 36,  y: 342, w: 468, h: 36,  label: 'Seated (L–R): M. Vance, Editor-in-Chief; R. Sterling, Managing Editor.' },
+                { id: 5, type: 'photo',    x: 36,  y: 396, w: 144, h: 144, label: 'Officer 1' },
+                { id: 6, type: 'photo',    x: 198, y: 396, w: 144, h: 144, label: 'Officer 2' },
+                { id: 7, type: 'photo',    x: 360, y: 396, w: 144, h: 144, label: 'Officer 3' },
+                { id: 8, type: 'text',     x: 36,  y: 552, w: 468, h: 120, label: 'Organization Roster & Year in Review' }
+            ],
+            portraits: [
+                { id: 1, type: 'photo',    x: 36,  y: 36,  w: 132, h: 132, label: 'Portrait 1' },
+                { id: 2, type: 'caption',  x: 36,  y: 174, w: 132, h: 42,  label: 'Eleanor Hayes — History' },
+                { id: 3, type: 'photo',    x: 36,  y: 240, w: 132, h: 132, label: 'Portrait 2' },
+                { id: 4, type: 'caption',  x: 36,  y: 378, w: 132, h: 42,  label: 'David Mercer — Physics' },
+                { id: 5, type: 'photo',    x: 36,  y: 444, w: 132, h: 132, label: 'Portrait 3' },
+                { id: 6, type: 'caption',  x: 36,  y: 582, w: 132, h: 42,  label: 'Clara Lin — Literature' },
+                { id: 7, type: 'headline', x: 192, y: 36,  w: 312, h: 60,  label: 'CLASS OF 1965 PROFILES' },
+                { id: 8, type: 'rule',     x: 192, y: 102, w: 312, h: 18,  label: 'Bio Divider Rule' },
+                { id: 9, type: 'text',     x: 192, y: 132, w: 312, h: 492, label: 'Senior Biographies & Campus Honors' }
+            ],
+            blank: []
+        };
 
-  // Starter 1965 Single-Page Yearbook Dummy Layout (in picas * PICA)
-  function getDefaultLayout() {
-    return [
-      {
-        id: uid(),
-        type: "headline",
-        x: 3 * PICA,
-        y: 3 * PICA,
-        w: 39 * PICA,
-        h: 5 * PICA,
-        label: "CAMPUS LIFE & AUTUMN TRADITIONS",
-      },
-      {
-        id: uid(),
-        type: "photo",
-        x: 3 * PICA,
-        y: 9 * PICA,
-        w: 24 * PICA,
-        h: 22 * PICA,
-        label: "LEAD PHOTO: Quad Gathering (24p x 22p)",
-      },
-      {
-        id: uid(),
-        type: "caption",
-        x: 3 * PICA,
-        y: 32 * PICA,
-        w: 24 * PICA,
-        h: 4 * PICA,
-        label: "CUTLINE: Seniors on library steps, Oct. 1964",
-      },
-      {
-        id: uid(),
-        type: "text",
-        x: 28 * PICA,
-        y: 9 * PICA,
-        w: 14 * PICA,
-        h: 27 * PICA,
-        label: "LEAD COPY: Col 1",
-      },
-      {
-        id: uid(),
-        type: "text",
-        x: 3 * PICA,
-        y: 38 * PICA,
-        w: 19 * PICA,
-        h: 19 * PICA,
-        label: "BODY COPY: Col 2",
-      },
-      {
-        id: uid(),
-        type: "photo",
-        x: 23 * PICA,
-        y: 38 * PICA,
-        w: 19 * PICA,
-        h: 14 * PICA,
-        label: "SECONDARY PHOTO: Club Officers",
-      },
-      {
-        id: uid(),
-        type: "caption",
-        x: 23 * PICA,
-        y: 53 * PICA,
-        w: 19 * PICA,
-        h: 4 * PICA,
-        label: "FOLIO: Page 14 — Student Activities",
-      },
-    ];
-  }
+        /* =====================================================================
+           APPLICATION STATE
+           ===================================================================== */
+        let currentPresetKey = 'feature';
+        let blocks = [];
+        let selectedId = null;
+        let nextBlockId = 100;
+        let showGuides = true;
+        let snapEnabled = true;
 
-  // Application State
-  let blocks = getDefaultLayout();
-  let selectedId = null;
-  let undoStack = [];
-  let snapToGrid = true;
+        // Undo History Stack
+        let undoStack = [];
+        const MAX_UNDO = 45;
 
-  // DOM References
-  const dummyPage = document.getElementById("dummyPage");
-  const blocksLayer = document.getElementById("blocksLayer");
-  const rulerTop = document.getElementById("rulerTop");
-  const rulerLeft = document.getElementById("rulerLeft");
+        // Pointer Drag / Resize Interaction State
+        let interaction = null;
 
-  const toggleGrid = document.getElementById("toggleGrid");
-  const toggleSnap = document.getElementById("toggleSnap");
-  const btnUndo = document.getElementById("btnUndo");
-  const btnReset = document.getElementById("btnReset");
-  const btnClear = document.getElementById("btnClear");
-  const btnExportCode = document.getElementById("btnExportCode");
-  const btnExportPng = document.getElementById("btnExportPng");
-  const includeStickyPng = document.getElementById("includeStickyPng");
+        // Inline Editing State
+        let inlineEditingId = null;
 
-  const contextEmpty = document.getElementById("contextEmpty");
-  const contextActive = document.getElementById("contextActive");
-  const selectedTypeBadge = document.getElementById("selectedTypeBadge");
-  const selectedLabelInput = document.getElementById("selectedLabelInput");
-  const selectedMetrics = document.getElementById("selectedMetrics");
-  const btnForward = document.getElementById("btnForward");
-  const btnBackward = document.getElementById("btnBackward");
-  const btnDuplicate = document.getElementById("btnDuplicate");
-  const btnDelete = document.getElementById("btnDelete");
-
-  const exportModal = document.getElementById("exportModal");
-  const btnCloseModal = document.getElementById("btnCloseModal");
-  const btnCopyCode = document.getElementById("btnCopyCode");
-  const exportedCodeOutput = document.getElementById("exportedCodeOutput");
-  const wpMappingSummary = document.getElementById("wpMappingSummary");
-
-  function uid() {
-    return "blk_" + Math.random().toString(36).slice(2, 9);
-  }
-
-  function snap(val) {
-    return snapToGrid ? Math.round(val / PICA) * PICA : Math.round(val);
-  }
-
-  function clamp(val, min, max) {
-    return Math.max(min, Math.min(max, val));
-  }
-
-  function saveHistory() {
-    undoStack.push(JSON.stringify(blocks));
-    if (undoStack.length > 35) undoStack.shift();
-    btnUndo.disabled = undoStack.length === 0;
-  }
-
-  function undo() {
-    if (undoStack.length === 0) return;
-    blocks = JSON.parse(undoStack.pop());
-    if (!blocks.some((b) => b.id === selectedId)) {
-      selectedId = null;
-    }
-    btnUndo.disabled = undoStack.length === 0;
-    render();
-  }
-
-  // Build Pica Rulers (0p to 45p, 0p to 60p)
-  function buildRulers() {
-    rulerTop.innerHTML = "";
-    rulerLeft.innerHTML = "";
-
-    for (let p = 0; p <= PAGE_PICAS_W; p += 3) {
-      const tick = document.createElement("div");
-      tick.className = "ruler-tick-x";
-      tick.style.left = `${p * PICA}px`; tick.textContent = `${p}p`;
-      rulerTop.appendChild(tick);
-    }
-
-    for (let p = 0; p <= PAGE_PICAS_H; p += 3) {
-      const tick = document.createElement("div");
-      tick.className = "ruler-tick-y";
-      tick.style.top = `${p * PICA}px`; tick.textContent = `${p}p`;
-      rulerLeft.appendChild(tick);
-    }
-  }
-
-  // Render All Blocks & Update Contextual Bar
-  function render() {
-    blocksLayer.innerHTML = "";
-
-    blocks.forEach((block) => {
-      const el = document.createElement("div");
-      el.className = `layout-block block-${block.type}${block.id === selectedId ? " selected" : ""}`;
-      el.dataset.id = block.id;
-      el.style.left = `${block.x}px`; el.style.top = `${block.y}px`;
-      el.style.width = `${block.w}px`; el.style.height = `${block.h}px`;
-
-      if (block.type === "sticky") {
-        const header = document.createElement("div");
-        header.className = "sticky-header";
-        header.innerHTML = `<span>${escapeHtml(block.label \vert{}\vert{} "Note")}</span><span>Excluded</span>`;  const textarea = document.createElement("textarea"); textarea.className = "sticky-textarea"; textarea.placeholder = "Write personal notes or ideas here..."; textarea.value = block.noteText \vert{}\vert{} "";  textarea.addEventListener("mousedown", (e) => { e.stopPropagation(); if (selectedId !== block.id) { selectedId = block.id; render(); // Re-focus textarea after re-render const refreshed = blocksLayer.querySelector( `.layout-block[data-id="${block.id}"] textarea`
-            );
-            if (refreshed) refreshed.focus();
-          }
+        /* =====================================================================
+           INITIALIZATION
+           ===================================================================== */
+        window.addEventListener('DOMContentLoaded', () => {
+            loadPreset('feature', false);
+            setupPaletteDragAndDrop();
+            setupCanvasDeselect();
+            setupKeyboardShortcuts();
         });
 
-        textarea.addEventListener("input", (e) => {
-          block.noteText = e.target.value;
+        /* =====================================================================
+           HELPER: PICA FORMATTING (12px = 1p)
+           ===================================================================== */
+        function formatPica(px) {
+            const p = px / PICA_PX;
+            return Number.isInteger(p) ? `${p}p` : `${Number(p.toFixed(1))}p`;
+        }
+
+        /* =====================================================================
+           UNDO HISTORY MANAGEMENT
+           ===================================================================== */
+        function pushUndoState(snapshot = null) {
+            const stateToSave = snapshot || JSON.stringify(blocks);
+            if (undoStack.length > 0 && undoStack[undoStack.length - 1] === stateToSave) {
+                return;
+            }
+            undoStack.push(stateToSave);
+            if (undoStack.length > MAX_UNDO) {
+                undoStack.shift();
+            }
+            updateUndoButton();
+        }
+
+        function undo() {
+            if (undoStack.length === 0) return;
+            const prevJSON = undoStack.pop();
+            blocks = JSON.parse(prevJSON);
+            if (selectedId && !blocks.some(b => b.id === selectedId)) {
+                selectedId = null;
+            }
+            inlineEditingId = null;
+            updateUndoButton();
+            renderAll();
+            showToast('Reverted last change');
+        }
+
+        function updateUndoButton() {
+            document.getElementById('btn-undo').disabled = undoStack.length === 0;
+        }
+
+        /* =====================================================================
+           PRESET LOADING & DISPLAY GUIDES
+           ===================================================================== */
+        function handlePresetChange(presetKey) {
+            pushUndoState();
+            loadPreset(presetKey, true);
+        }
+
+        function resetCurrentPreset() {
+            pushUndoState();
+            loadPreset(currentPresetKey, true);
+            showToast('Page reset to preset layout');
+        }
+
+        function loadPreset(presetKey, notify) {
+            currentPresetKey = presetKey;
+            document.getElementById('preset-selector').value = presetKey;
+            const preset = PAGE_PRESETS[presetKey] || [];
+            blocks = JSON.parse(JSON.stringify(preset));
+            nextBlockId = blocks.reduce((max, b) => Math.max(max, b.id), 0) + 1;
+            selectedId = null;
+            inlineEditingId = null;
+            renderAll();
+            if (notify) {
+                const label = document.getElementById('preset-selector').selectedOptions[0].text;
+                showToast(`Loaded: ${label}`);
+            }
+        }
+
+        function toggleGuides() {
+            showGuides = document.getElementById('toggle-grid').checked;
+            document.getElementById('pica-grid-overlay').style.display = showGuides ? 'block' : 'none';
+            document.getElementById('sheet-margin-overlay').style.display = showGuides ? 'block' : 'none';
+        }
+
+        function toggleSnap() {
+            snapEnabled = document.getElementById('toggle-snap').checked;
+            showToast(snapEnabled ? 'Snap to Grid (1p / 12px) enabled' : 'Freeform positioning enabled');
+        }
+
+        function snapValue(val) {
+            return snapEnabled ? Math.round(val / PICA_PX) * PICA_PX : Math.round(val);
+        }
+
+        /* =====================================================================
+           ADDING & MANIPULATING BLOCKS
+           ===================================================================== */
+        function createBlockData(type, customX = null, customY = null) {
+            const defaults = {
+                photo:    { w: 228, h: 168, label: 'Photo Block' },
+                headline: { w: 468, h: 54,  label: 'SECTION HEADLINE' },
+                text:     { w: 222, h: 216, label: 'Body Copy Column' },
+                caption:  { w: 228, h: 42,  label: 'Photo cutline or caption...' },
+                rule:     { w: 468, h: 18,  label: 'Divider Rule' },
+                sticky:   { w: 204, h: 156, label: '' }
+            };
+            const cfg = defaults[type] || defaults.photo;
+            const offset = (blocks.length % 6) * 24;
+
+            let x = customX !== null ? customX - Math.round(cfg.w / 2) : 36 + offset;
+            let y = customY !== null ? customY - Math.round(cfg.h / 2) : 48 + offset;
+
+            x = snapValue(Math.max(0, Math.min(SHEET_WIDTH - cfg.w, x)));
+            y = snapValue(Math.max(0, Math.min(SHEET_HEIGHT - cfg.h, y)));
+
+            return {
+                id: nextBlockId++,
+                type,
+                x,
+                y,
+                w: cfg.w,
+                h: cfg.h,
+                label: cfg.label
+            };
+        }
+
+        function addBlock(type, customX = null, customY = null) {
+            pushUndoState();
+            const newBlock = createBlockData(type, customX, customY);
+            blocks.push(newBlock);
+            selectedId = newBlock.id;
+            inlineEditingId = null;
+            renderAll();
+
+            if (type === 'sticky') {
+                setTimeout(() => {
+                    const ta = document.querySelector(`[data-id="${newBlock.id}"] .sticky-textarea`);
+                    if (ta) ta.focus();
+                }, 20);
+            }
+        }
+
+        function duplicateSelected() {
+            if (!selectedId) return;
+            const src = blocks.find(b => b.id === selectedId);
+            if (!src) return;
+
+            pushUndoState();
+            const copy = JSON.parse(JSON.stringify(src));
+            copy.id = nextBlockId++;
+            copy.x = Math.min(SHEET_WIDTH - copy.w, copy.x + 24);
+            copy.y = Math.min(SHEET_HEIGHT - copy.h, copy.y + 24);
+            blocks.push(copy);
+            selectedId = copy.id;
+            renderAll();
+            showToast('Block duplicated');
+        }
+
+        function deleteSelected() {
+            if (!selectedId) return;
+            pushUndoState();
+            blocks = blocks.filter(b => b.id !== selectedId);
+            selectedId = null;
+            inlineEditingId = null;
+            renderAll();
+            showToast('Block removed');
+        }
+
+        function bringForward() {
+            if (!selectedId) return;
+            const idx = blocks.findIndex(b => b.id === selectedId);
+            if (idx === -1 || idx === blocks.length - 1) return;
+            pushUndoState();
+            const [item] = blocks.splice(idx, 1);
+            blocks.splice(idx + 1, 0, item);
+            renderCanvas();
+        }
+
+        function sendBackward() {
+            if (!selectedId) return;
+            const idx = blocks.findIndex(b => b.id === selectedId);
+            if (idx <= 0) return;
+            pushUndoState();
+            const [item] = blocks.splice(idx, 1);
+            blocks.splice(idx - 1, 0, item);
+            renderCanvas();
+        }
+
+        /* =====================================================================
+           DRAG & DROP FROM SIDEBAR PALETTE ONTO 45p × 60p SHEET
+           ===================================================================== */
+        function setupPaletteDragAndDrop() {
+            const paletteItems = document.querySelectorAll('.palette-item');
+            const sheetEl = document.getElementById('dummy-sheet');
+
+            paletteItems.forEach(item => {
+                item.addEventListener('dragstart', (e) => {
+                    e.dataTransfer.setData('text/plain', item.dataset.blockType);
+                    e.dataTransfer.effectAllowed = 'copy';
+                });
+            });
+
+            sheetEl.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                e.dataTransfer.dropEffect = 'copy';
+            });
+
+            sheetEl.addEventListener('drop', (e) => {
+                e.preventDefault();
+                const type = e.dataTransfer.getData('text/plain');
+                if (!type) return;
+                const rect = sheetEl.getBoundingClientRect();
+                const dropX = e.clientX - rect.left;
+                const dropY = e.clientY - rect.top;
+                addBlock(type, dropX, dropY);
+            });
+        }
+
+        /* =====================================================================
+           RENDERING CANVAS & CONTEXTUAL TOOLBAR
+           ===================================================================== */
+        function renderAll() {
+            renderCanvas();
+            updateContextBar();
+        }
+
+        function renderCanvas() {
+            const layer = document.getElementById('canvas-layer');
+            layer.innerHTML = '';
+
+            blocks.forEach(block => {
+                const isSelected = block.id === selectedId;
+                const isEditingInline = block.id === inlineEditingId;
+
+                const el = document.createElement('div');
+                el.dataset.id = block.id;
+                el.style.left = `${block.x}px`;
+                el.style.top = `${block.y}px`;
+                el.style.width = `${block.w}px`;
+                el.style.height = `${block.h}px`;
+
+                if (block.type === 'sticky') {
+                    el.className = `draft-block block-sticky ${isSelected ? 'selected' : ''}`;
+                    el.innerHTML = `
+                        <div class="sticky-drag-bar" title="Drag Sticky Note">
+                            <div class="sticky-grip"><span></span><span></span><span></span></div>
+                            <span style="font-size: 9px; font-weight: 700; color: #854d0e; letter-spacing: 0.05em;">SCRATCHPAD</span>
+                        </div>
+                        <textarea class="sticky-textarea" placeholder="Write personal reminders or layout notes...">${escapeHTML(block.label)}</textarea>
+                        <div class="sticky-footer-tag">Personal Note — Excluded from Wireframe</div>
+                    `;
+
+                    const textarea = el.querySelector('.sticky-textarea');
+                    let stickyInitialSnapshot = null;
+
+                    textarea.addEventListener('focus', () => {
+                        stickyInitialSnapshot = JSON.stringify(blocks);
+                        if (selectedId !== block.id) {
+                            selectedId = block.id;
+                            renderAll();
+                            setTimeout(() => {
+                                const refocused = document.querySelector(`[data-id="${block.id}"] .sticky-textarea`);
+                                if (refocused) refocused.focus();
+                            }, 0);
+                        }
+                    });
+
+                    textarea.addEventListener('input', (e) => {
+                        block.label = e.target.value;
+                    });
+
+                    textarea.addEventListener('blur', () => {
+                        if (stickyInitialSnapshot && stickyInitialSnapshot !== JSON.stringify(blocks)) {
+                            pushUndoState(stickyInitialSnapshot);
+                        }
+                        stickyInitialSnapshot = null;
+                    });
+
+                    // Allow typing inside textarea without triggering drag
+                    textarea.addEventListener('pointerdown', (e) => {
+                        e.stopPropagation();
+                        if (selectedId !== block.id) {
+                            selectedId = block.id;
+                            renderAll();
+                            setTimeout(() => {
+                                const refocused = document.querySelector(`[data-id="${block.id}"] .sticky-textarea`);
+                                if (refocused) refocused.focus();
+                            }, 0);
+                        }
+                    });
+                } else {
+                    el.className = `draft-block wireframe-block block-${block.type} ${isSelected ? 'selected' : ''}`;
+
+                    const picaDim = `${formatPica(block.w)}×${formatPica(block.h)}`;
+
+                    if (block.type === 'photo') {
+                      if (block.imageURL) {
+                        el.style.backgroundImage = `url('${block.imageURL}')`;
+                        el.style.backgroundSize = 'cover';
+                        el.style.backgroundPosition = 'center';
+                        el.innerHTML = `
+                          <div class="photo-header-bar">
+                            <span class="pencil-tag">${escapeHTML(block.label || 'Photo Block')}</span>
+                            <span class="pica-readout">${picaDim}</span>
+                          </div>
+                        `;
+                      } else {                      
+                        el.innerHTML = `
+                            <svg class="photo-svg" viewBox="0 0 ${block.w} ${block.h}" preserveAspectRatio="none">
+                                <line x1="0" y1="0" x2="${block.w}" y2="${block.h}" class="photo-line"></line>
+                                <line x1="${block.w}" y1="0" x2="0" y2="${block.h}" class="photo-line"></line>
+                            </svg>
+                            <div class="photo-header-bar">
+                                <span class="pencil-tag">${escapeHTML(block.label || 'Photo Block')}</span>
+                                <span class="pica-readout">${picaDim}</span>
+                            </div>
+                        `;
+                      }
+                    } else if (block.type === 'headline') {
+                        const fontSize = Math.max(14, Math.min(28, Math.round(block.h * 0.44)));
+                        el.innerHTML = `
+                            <div class="headline-text" style="font-size: ${fontSize}px;">${escapeHTML(block.label || 'HEADLINE')}</div>
+                        `;
+                    } else if (block.type === 'text') {
+                        el.innerHTML = `
+                            <div class="text-col-header">${escapeHTML(block.label || 'Body Copy Column')}</div>
+                            <div class="ruled-lines-body"></div>
+                        `;
+                    } else if (block.type === 'caption') {
+                        el.innerHTML = `
+                            <div class="caption-text">${escapeHTML(block.label || 'Caption / Cutline')}</div>
+                        `;
+                    } else if (block.type === 'rule') {
+                        el.innerHTML = `
+                            <div class="rule-double-stroke"></div>
+                        `;
+                    }
+
+                    // Double-click to inline edit label
+                    el.addEventListener('dblclick', (e) => {
+                        e.stopPropagation();
+                        startInlineRename(block.id);
+                    });
+
+                    if (isEditingInline) {
+                        const input = document.createElement('input');
+                        input.type = 'text';
+                        input.className = 'inline-rename-input';
+                        input.value = block.label;
+                        const beforeRenameSnapshot = JSON.stringify(blocks);
+
+                        el.innerHTML = '';
+                        el.style.display = 'flex';
+                        el.style.alignItems = 'center';
+                        el.style.justifyContent = 'center';
+                        el.appendChild(input);
+
+                        const commitRename = () => {
+                            if (inlineEditingId !== block.id) return;
+                            const trimmed = input.value.trim();
+                            if (trimmed && trimmed !== block.label) {
+                                pushUndoState(beforeRenameSnapshot);
+                                block.label = trimmed;
+                            }
+                            inlineEditingId = null;
+                            renderAll();
+                        };
+
+                        input.addEventListener('pointerdown', e => e.stopPropagation());
+                        input.addEventListener('keydown', (e) => {
+                            if (e.key === 'Enter') {
+                                e.preventDefault();
+                                commitRename();
+                            } else if (e.key === 'Escape') {
+                                inlineEditingId = null;
+                                renderAll();
+                            }
+                        });
+                        input.addEventListener('blur', commitRename);
+
+                        setTimeout(() => {
+                            input.focus();
+                            input.select();
+                        }, 10);
+                    }
+                }
+
+                // Append 8 resize handles if selected and not inline-editing
+                if (isSelected && !isEditingInline) {
+                    const handles = ['nw', 'n', 'ne', 'e', 'se', 's', 'sw', 'w'];
+                    handles.forEach(dir => {
+                        const h = document.createElement('div');
+                        h.className = `resize-handle handle-${dir}`;
+                        h.addEventListener('pointerdown', (e) => beginResize(e, block.id, dir));
+                        el.appendChild(h);
+                    });
+                }
+
+                // Pointer down to select & drag
+                el.addEventListener('pointerdown', (e) => {
+                    if (e.target.classList.contains('resize-handle')) return;
+                    if (inlineEditingId === block.id) return;
+                    beginDrag(e, block.id);
+                });
+
+                layer.appendChild(el);
+            });
+        }
+
+        function startInlineRename(id) {
+            const block = blocks.find(b => b.id === id);
+            if (!block || block.type === 'sticky') return;
+            selectedId = id;
+            inlineEditingId = id;
+            renderAll();
+        }
+
+        /* =====================================================================
+           CONTEXTUAL TOOLBAR UPDATES
+           ===================================================================== */
+        let contextLabelBeforeSnapshot = null;
+
+        function updateContextBar() {
+            const idleEl = document.getElementById('context-idle');
+            const activeEl = document.getElementById('context-active');
+
+            if (!selectedId) {
+                idleEl.style.display = 'flex';
+                activeEl.classList.remove('visible');
+                return;
+            }
+
+            const block = blocks.find(b => b.id === selectedId);
+            if (!block) {
+                idleEl.style.display = 'flex';
+                activeEl.classList.remove('visible');
+                return;
+            }
+
+            idleEl.style.display = 'none';
+            activeEl.classList.add('visible');
+
+            const typeNames = {
+                photo: 'Photo Block',
+                headline: 'Headline',
+                text: 'Body Copy',
+                caption: 'Caption / Cutline',
+                rule: 'Rule / Divider',
+                sticky: 'Sticky Note'
+            };
+
+            document.getElementById('ctx-type').textContent = typeNames[block.type] || block.type;
+
+            const labelWrapper = document.getElementById('ctx-label-wrapper');
+            const labelInput = document.getElementById('ctx-label-input');
+
+            if (block.type === 'sticky') {
+                labelWrapper.style.display = 'none';
+            } else {
+                labelWrapper.style.display = 'flex';
+                if (document.activeElement !== labelInput) {
+                    labelInput.value = block.label;
+                }
+            }
+
+            updateContextMetrics(block);
+        }
+
+        function updateContextMetrics(block) {
+            const xPica = formatPica(block.x);
+            const yPica = formatPica(block.y);
+            const wPica = formatPica(block.w);
+            const hPica = formatPica(block.h);
+            const pctPageW = Math.round((block.w / SHEET_WIDTH) * 100);
+            document.getElementById('ctx-metrics').textContent = `X: ${xPica}  Y: ${yPica}  |  W: ${wPica} (${pctPageW}%) × H: ${hPica}`;
+        }
+
+        function handleContextLabelInput(newVal) {
+            if (!selectedId) return;
+            const block = blocks.find(b => b.id === selectedId);
+            if (!block || block.type === 'sticky') return;
+
+            if (!contextLabelBeforeSnapshot) {
+                contextLabelBeforeSnapshot = JSON.stringify(blocks);
+            }
+            block.label = newVal;
+            renderCanvas();
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const ctxInput = document.getElementById('ctx-label-input');
+            ctxInput.addEventListener('focus', () => {
+                contextLabelBeforeSnapshot = JSON.stringify(blocks);
+            });
+            ctxInput.addEventListener('blur', () => {
+                if (contextLabelBeforeSnapshot && contextLabelBeforeSnapshot !== JSON.stringify(blocks)) {
+                    pushUndoState(contextLabelBeforeSnapshot);
+                }
+                contextLabelBeforeSnapshot = null;
+            });
+            ctxInput.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    ctxInput.blur();
+                }
+            });
         });
 
-        el.appendChild(header);
-        el.appendChild(textarea);
-      } else {
-        const labelEl = document.createElement("div");
-        labelEl.className = "block-label";
-        labelEl.textContent = block.label;
-        el.appendChild(labelEl);
+        /* =====================================================================
+           POINTER DRAGGING & 8-HANDLE RESIZING
+           ===================================================================== */
+        function beginDrag(e, id) {
+            e.stopPropagation();
+            if (inlineEditingId && inlineEditingId !== id) {
+                inlineEditingId = null;
+            }
 
-        if (block.type === "text") {
-          const lines = document.createElement("div");
-          lines.className = "ruled-lines";
-          el.appendChild(lines);
+            selectedId = id;
+            const block = blocks.find(b => b.id === id);
+            if (!block) return;
+
+            interaction = {
+                mode: 'drag',
+                id,
+                startX: e.clientX,
+                startY: e.clientY,
+                origX: block.x,
+                origY: block.y,
+                preSnapshot: JSON.stringify(blocks),
+                moved: false
+            };
+
+            renderAll();
+            window.addEventListener('pointermove', onPointerMove);
+            window.addEventListener('pointerup', onPointerUp);
         }
-      }
 
-      // Dimension pill when selected
-      const dimTag = document.createElement("div");
-      dimTag.className = "block-dim-tag";
-      dimTag.textContent = formatPicaDims(block);
-      el.appendChild(dimTag);
+        function beginResize(e, id, handle) {
+            e.stopPropagation();
+            selectedId = id;
+            const block = blocks.find(b => b.id === id);
+            if (!block) return;
 
-      // 8 Resize Handles
-      ["nw", "n", "ne", "e", "se", "s", "sw", "w"].forEach((dir) => {
-        const handle = document.createElement("div");
-        handle.className = `resize-handle handle-${dir}`; handle.dataset.dir = dir; el.appendChild(handle); });  // Drag / Resize Initiation el.addEventListener("mousedown", (e) => onBlockMouseDown(e, block.id)); blocksLayer.appendChild(el); });  updateContextBar(); }  function formatPicaDims(b) { const pw = Math.round((b.w / PICA) * 10) / 10; const ph = Math.round((b.h / PICA) * 10) / 10; return `${pw}p × ${ph}p`; }  function updateContextBar() { const selected = blocks.find((b) => b.id === selectedId); if (!selected) { contextEmpty.classList.remove("hidden"); contextActive.classList.add("hidden"); return; }  contextEmpty.classList.add("hidden"); contextActive.classList.remove("hidden");  const meta = TYPE_META[selected.type]; selectedTypeBadge.textContent = meta.badge; selectedLabelInput.value = selected.label;  const pw = Math.round((selected.w / PICA) * 10) / 10; const ph = Math.round((selected.h / PICA) * 10) / 10; const px = Math.round((selected.x / PICA) * 10) / 10; const py = Math.round((selected.y / PICA) * 10) / 10; const pctW = Math.round((selected.w / PAGE_W) * 100); const pctH = Math.round((selected.h / PAGE_H) * 100);  selectedMetrics.textContent = `W: ${pw}p (${pctW}\%) • H: ${ph}p (${pctH}\%) • X: ${px}p, Y: ${py}p`; }  // Dragging & 8-Direction Resizing function onBlockMouseDown(e, id) { if (e.button !== 0) return; e.stopPropagation();  const block = blocks.find((b) => b.id === id); if (!block) return;  selectedId = id; render();  const isHandle = e.target.classList.contains("resize-handle"); const dir = isHandle ? e.target.dataset.dir : null;  const startX = e.clientX; const startY = e.clientY; const orig = { x: block.x, y: block.y, w: block.w, h: block.h }; let hasMoved = false;  function onMouseMove(moveEvent) { const dx = moveEvent.clientX - startX; const dy = moveEvent.clientY - startY;  if (!hasMoved && (Math.abs(dx) > 2 \vert{}\vert{} Math.abs(dy) > 2)) { saveHistory(); hasMoved = true; } if (!hasMoved) return;  if (!isHandle) { // Move block within 45p x 60p sheet const nextX = clamp(snap(orig.x + dx), 0, PAGE_W - orig.w); const nextY = clamp(snap(orig.y + dy), 0, PAGE_H - orig.h); block.x = nextX; block.y = nextY; } else { // Resize block let { x, y, w, h } = orig;  if (dir.includes("e")) { w = clamp(snap(orig.w + dx), MIN_W, PAGE_W - orig.x); } if (dir.includes("s")) { h = clamp(snap(orig.h + dy), MIN_H, PAGE_H - orig.y); } if (dir.includes("w")) { const proposedX = clamp(snap(orig.x + dx), 0, orig.x + orig.w - MIN_W); w = orig.x + orig.w - proposedX; x = proposedX; } if (dir.includes("n")) { const proposedY = clamp(snap(orig.y + dy), 0, orig.y + orig.h - MIN_H); h = orig.y + orig.h - proposedY; y = proposedY; }  block.x = x; block.y = y; block.w = w; block.h = h; }  // Fast DOM update during drag const domEl = blocksLayer.querySelector(`.layout-block[data-id="${block.id}"]`);
-      if (domEl) {
-        domEl.style.left = `${block.x}px`; domEl.style.top = `${block.y}px`;
-        domEl.style.width = `${block.w}px`; domEl.style.height = `${block.h}px`;
-        const tag = domEl.querySelector(".block-dim-tag");
-        if (tag) tag.textContent = formatPicaDims(block);
-      }
-      updateContextBar();
-    }
+            interaction = {
+                mode: 'resize',
+                id,
+                handle,
+                startX: e.clientX,
+                startY: e.clientY,
+                origX: block.x,
+                origY: block.y,
+                origW: block.w,
+                origH: block.h,
+                preSnapshot: JSON.stringify(blocks),
+                moved: false
+            };
 
-    function onMouseUp() {
-      window.removeEventListener("mousemove", onMouseMove);
-      window.removeEventListener("mouseup", onMouseUp);
-      if (hasMoved) render();
-    }
-
-    window.addEventListener("mousemove", onMouseMove);
-    window.addEventListener("mouseup", onMouseUp);
-  }
-
-  // Add New Block
-  function addBlock(type) {
-    const meta = TYPE_META[type];
-    if (!meta) return;
-
-    saveHistory();
-    const offset = (blocks.length % 6) * PICA;
-    const newBlock = {
-      id: uid(),
-      type,
-      x: clamp(3 * PICA + offset, 0, PAGE_W - meta.defaultW),
-      y: clamp(6 * PICA + offset, 0, PAGE_H - meta.defaultH),
-      w: meta.defaultW,
-      h: meta.defaultH,
-      label: meta.defaultLabel,
-      noteText: type === "sticky" ? "" : undefined,
-    };
-
-    blocks.push(newBlock);
-    selectedId = newBlock.id;
-    render();
-  }
-
-  // Block Actions
-  function duplicateSelected() {
-    const src = blocks.find((b) => b.id === selectedId);
-    if (!src) return;
-
-    saveHistory();
-    const copy = {
-      ...src,
-      id: uid(),
-      x: clamp(src.x + 2 * PICA, 0, PAGE_W - src.w),
-      y: clamp(src.y + 2 * PICA, 0, PAGE_H - src.h),
-    };
-    blocks.push(copy);
-    selectedId = copy.id;
-    render();
-  }
-
-  function deleteSelected() {
-    if (!selectedId) return;
-    saveHistory();
-    blocks = blocks.filter((b) => b.id !== selectedId);
-    selectedId = null;
-    render();
-  }
-
-  function moveLayer(delta) {
-    const idx = blocks.findIndex((b) => b.id === selectedId);
-    if (idx === -1) return;
-    const targetIdx = idx + delta;
-    if (targetIdx < 0 || targetIdx >= blocks.length) return;
-
-    saveHistory();
-    const [item] = blocks.splice(idx, 1);
-    blocks.splice(targetIdx, 0, item);
-    render();
-  }
-
-  // Wireframe HTML/CSS & WordPress Block Exporter (Excludes Sticky Notes)
-  function openWireframeModal() {
-    const wireframeBlocks = blocks.filter((b) => b.type !== "sticky");
-    const stickyCount = blocks.length - wireframeBlocks.length;
-
-    // Sort top-to-bottom, left-to-right for semantic reading order
-    const sorted = [...wireframeBlocks].sort((a, b) =>
-      Math.abs(a.y - b.y) > PICA ? a.y - b.y : a.x - b.x
-    );
-
-    let summaryHtml = `<strong>1965 Dummy &rarr; WordPress Block Translation (${sorted.length} blocks):</strong>`;
-    if (stickyCount > 0) {
-      summaryHtml += ` <em>(${stickyCount} personal sticky${stickyCount === 1 ? "note" : "notes"} excluded)</em>`;
-    }
-    summaryHtml += `<ul>`;
-
-    sorted.forEach((b) => {
-      const pctW = Math.round((b.w / PAGE_W) * 100);
-      const pctX = Math.round((b.x / PAGE_W) * 100);
-      summaryHtml += `<li><strong>${escapeHtml(b.label)}</strong> &rarr; <code>${TYPE_META[b.type].wpBlock}</code> (Width: ${pctW}\%, Left Offset:${pctX}%)</li>`;
-    });
-    summaryHtml += `</ul>`;
-    wpMappingSummary.innerHTML = summaryHtml;
-
-    const htmlItems = sorted
-      .map((b, i) => {
-        const leftPct = ((b.x / PAGE_W) * 100).toFixed(1);
-        const topPct = ((b.y / PAGE_H) * 100).toFixed(1);
-        const widthPct = ((b.w / PAGE_W) * 100).toFixed(1);
-        const heightPct = ((b.h / PAGE_H) * 100).toFixed(1);
-        const tag = b.type === "headline" ? "h2" : b.type === "photo" ? "figure" : "div";
-
-        return `  <!-- ${TYPE_META[b.type].wpBlock} -->
-  <${tag} class="wf-block wf-${b.type}" style="left:${leftPct}\%; top:${topPct}%; width:${widthPct}\%; height:${heightPct}%;">
-    <span>${escapeHtml(b.label)}</span>
-  </${tag}>`;
-      })
-      .join("\n\n");
-
-    const fullCode = `<!-- Responsive Wireframe Generated from 1965 Yearbook Dummy (45p x 60p) -->
-<section class="yearbook-wireframe-page">
-${htmlItems}
-</section>
-
-<style>
-  .yearbook-wireframe-page {
-    position: relative;
-    width: 100%;
-    max-width: 720px;
-    aspect-ratio: 45 / 60; /* 3:4 Single-Page Proportion */
-    margin: 0 auto;
-    background: #fafafa;
-    border: 1px solid #d4d4d8;
-  }
-  .wf-block {
-    position: absolute;
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0.5rem;
-    border: 1.5px solid #3f3f46;
-    background: #f4f4f5;
-    font-family: system-ui, sans-serif;
-    font-size: 0.75rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-  }
-  .wf-photo { background: #e4e4e7; }
-  .wf-headline { font-weight: 700; font-size: 1rem; justify-content: flex-start; }
-  .wf-caption { border-style: dashed; font-style: italic; }
-</style>`;
-
-    exportedCodeOutput.textContent = fullCode;
-    exportModal.classList.remove("hidden");
-  }
-
-  // Crisp 2x Retina PNG Snapshot Renderer
-  function downloadPngSnapshot() {
-    const scale = 2;
-    const canvas = document.createElement("canvas");
-    canvas.width = PAGE_W * scale;
-    canvas.height = PAGE_H * scale;
-    const ctx = canvas.getContext("2d");
-    ctx.scale(scale, scale);
-
-    // Paper Base
-    ctx.fillStyle = "#f4efe4";
-    ctx.fillRect(0, 0, PAGE_W, PAGE_H);
-
-    // Optional Pica Grid & 3-Pica Margin
-    if (toggleGrid.checked) {
-      ctx.strokeStyle = "rgba(66, 115, 168, 0.16)";
-      ctx.lineWidth = 1;
-      for (let x = 0; x <= PAGE_W; x += PICA) {
-        ctx.beginPath();
-        ctx.moveTo(x, 0);
-        ctx.lineTo(x, PAGE_H);
-        ctx.stroke();
-      }
-      for (let y = 0; y <= PAGE_H; y += PICA) {
-        ctx.beginPath();
-        ctx.moveTo(0, y);
-        ctx.lineTo(PAGE_W, y);
-        ctx.stroke();
-      }
-
-      ctx.save();
-      ctx.setLineDash([4, 4]);
-      ctx.strokeStyle = "rgba(185, 65, 65, 0.4)";
-      ctx.strokeRect(36, 36, PAGE_W - 72, PAGE_H - 72);
-      ctx.restore();
-    }
-
-    // Sheet Header Stamp
-    ctx.fillStyle = "rgba(47, 45, 42, 0.6)";
-    ctx.font = "10px 'Courier Prime', monospace";
-    ctx.fillText("YEARBOOK DUMMY — SINGLE PAGE (45p × 60p)", 36, 20);
-
-    // Draw Blocks
-    const includeStickies = includeStickyPng.checked;
-    blocks.forEach((b) => {
-      if (b.type === "sticky" && !includeStickies) return;
-
-      ctx.save();
-      if (b.type === "sticky") {
-        ctx.fillStyle = "#fef08a";
-        ctx.strokeStyle = "#eab308";
-        ctx.lineWidth = 1.5;
-        ctx.fillRect(b.x, b.y, b.w, b.h);
-        ctx.strokeRect(b.x, b.y, b.w, b.h);
-
-        ctx.fillStyle = "#713f12";
-        ctx.font = "bold 9px sans-serif";
-        ctx.fillText(b.label || "NOTE", b.x + 6, b.y + 13);
-
-        ctx.fillStyle = "#422006";
-        ctx.font = "13px sans-serif";
-        wrapCanvasText(ctx, b.noteText || "", b.x + 6, b.y + 28, b.w - 12, 15);
-      } else if (b.type === "photo") {
-        ctx.fillStyle = "rgba(232, 224, 208, 0.9)";
-        ctx.strokeStyle = "#2f2d2a";
-        ctx.lineWidth = 2;
-        ctx.fillRect(b.x, b.y, b.w, b.h);
-        ctx.strokeRect(b.x, b.y, b.w, b.h);
-
-        // Diagonal X lines
-        ctx.lineWidth = 1.2;
-        ctx.beginPath();
-        ctx.moveTo(b.x, b.y);
-        ctx.lineTo(b.x + b.w, b.y + b.h);
-        ctx.moveTo(b.x + b.w, b.y);
-        ctx.lineTo(b.x, b.y + b.h);
-        ctx.stroke();
-
-        // Centered Label Pill
-        ctx.font = "bold 11px 'Courier Prime', monospace";
-        const textW = Math.min(ctx.measureText(b.label).width + 12, b.w - 10);
-        const pillX = b.x + (b.w - textW) / 2;
-        const pillY = b.y + b.h / 2 - 9;
-        ctx.fillStyle = "#f4efe4";
-        ctx.fillRect(pillX, pillY, textW, 18);
-        ctx.strokeRect(pillX, pillY, textW, 18);
-        ctx.fillStyle = "#2f2d2a";
-        ctx.textAlign = "center";
-        ctx.fillText(b.label, b.x + b.w / 2, pillY + 13, b.w - 14);
-      } else if (b.type === "text") {
-        ctx.fillStyle = "rgba(244, 239, 228, 0.85)";
-        ctx.strokeStyle = "#2f2d2a";
-        ctx.lineWidth = 1.5;
-        ctx.fillRect(b.x, b.y, b.w, b.h);
-        ctx.strokeRect(b.x, b.y, b.w, b.h);
-
-        ctx.fillStyle = "#2f2d2a";
-        ctx.font = "bold 10px 'Courier Prime', monospace";
-        ctx.fillText(b.label.toUpperCase(), b.x + 8, b.y + 14, b.w - 16);
-
-        ctx.strokeStyle = "rgba(47, 45, 42, 0.45)";
-        ctx.lineWidth = 1;
-        for (let ly = b.y + 22; ly < b.y + b.h - 6; ly += 8) {
-          ctx.beginPath();
-          ctx.moveTo(b.x + 8, ly);
-          ctx.lineTo(b.x + b.w - 8, ly);
-          ctx.stroke();
+            window.addEventListener('pointermove', onPointerMove);
+            window.addEventListener('pointerup', onPointerUp);
         }
-      } else if (b.type === "headline") {
-        ctx.fillStyle = "rgba(238, 231, 216, 0.92)";
-        ctx.strokeStyle = "#2f2d2a";
-        ctx.lineWidth = 2;
-        ctx.fillRect(b.x, b.y, b.w, b.h);
-        ctx.strokeRect(b.x, b.y, b.w, b.h);
 
-        ctx.fillStyle = "#2f2d2a";
-        ctx.font = "bold 15px 'Courier Prime', monospace";
-        ctx.fillText(b.label, b.x + 10, b.y + b.h / 2 + 5, b.w - 20);
-      } else if (b.type === "caption") {
-        ctx.save();
-        ctx.setLineDash([4, 3]);
-        ctx.fillStyle = "rgba(244, 239, 228, 0.9)";
-        ctx.strokeStyle = "#2f2d2a";
-        ctx.lineWidth = 1.5;
-        ctx.fillRect(b.x, b.y, b.w, b.h);
-        ctx.strokeRect(b.x, b.y, b.w, b.h);
-        ctx.restore();
+        function onPointerMove(e) {
+            if (!interaction) return;
+            const block = blocks.find(b => b.id === interaction.id);
+            if (!block) return;
 
-        ctx.fillStyle = "#2f2d2a";
-        ctx.font = "italic 11px 'Courier Prime', monospace";
-        ctx.fillText(b.label, b.x + 7, b.y + b.h / 2 + 4, b.w - 14);
-      }
-      ctx.restore();
-    });
+            const dx = e.clientX - interaction.startX;
+            const dy = e.clientY - interaction.startY;
 
-    const link = document.createElement("a");
-    link.download = "1965-yearbook-layout-dummy-45x60p.png";
-    link.href = canvas.toDataURL("image/png");
-    link.click();
-  }
+            if (Math.abs(dx) > 1 || Math.abs(dy) > 1) {
+                interaction.moved = true;
+            }
 
-  function wrapCanvasText(ctx, text, x, y, maxWidth, lineHeight) {
-    const words = text.split(/\s+/);
-    let line = "";
-    let currY = y;
-    for (let i = 0; i < words.length; i++) {
-      const testLine = line + words[i] + " ";
-      if (ctx.measureText(testLine).width > maxWidth && i > 0) {
-        ctx.fillText(line, x, currY);
-        line = words[i] + " ";
-        currY += lineHeight;
-      } else {
-        line = testLine;
-      }
+            if (interaction.mode === 'drag') {
+                let nx = snapValue(interaction.origX + dx);
+                let ny = snapValue(interaction.origY + dy);
+
+                nx = Math.max(0, Math.min(SHEET_WIDTH - block.w, nx));
+                ny = Math.max(0, Math.min(SHEET_HEIGHT - block.h, ny));
+
+                block.x = nx;
+                block.y = ny;
+            } else if (interaction.mode === 'resize') {
+                const minW = block.type === 'sticky' ? 132 : 36;
+                const minH = block.type === 'rule' ? 12 : (block.type === 'sticky' ? 96 : 24);
+                const h = interaction.handle;
+
+                let newX = interaction.origX;
+                let newY = interaction.origY;
+                let newW = interaction.origW;
+                let newH = interaction.origH;
+
+                if (h.includes('e')) {
+                    newW = snapValue(interaction.origW + dx);
+                }
+                if (h.includes('s')) {
+                    newH = snapValue(interaction.origH + dy);
+                }
+                if (h.includes('w')) {
+                    const proposedW = snapValue(interaction.origW - dx);
+                    if (proposedW >= minW) {
+                        newW = proposedW;
+                        newX = interaction.origX + (interaction.origW - newW);
+                    }
+                }
+                if (h.includes('n')) {
+                    const proposedH = snapValue(interaction.origH - dy);
+                    if (proposedH >= minH) {
+                        newH = proposedH;
+                        newY = interaction.origY + (interaction.origH - newH);
+                    }
+                }
+
+                // Clamp within 45p × 60p sheet boundaries
+                newX = Math.max(0, newX);
+                newY = Math.max(0, newY);
+                newW = Math.max(minW, Math.min(SHEET_WIDTH - newX, newW));
+                newH = Math.max(minH, Math.min(SHEET_HEIGHT - newY, newH));
+
+                block.x = newX;
+                block.y = newY;
+                block.w = newW;
+                block.h = newH;
+            }
+
+            renderCanvas();
+            updateContextMetrics(block);
+        }
+
+        function onPointerUp() {
+            if (interaction && interaction.moved) {
+                pushUndoState(interaction.preSnapshot);
+            }
+            interaction = null;
+            window.removeEventListener('pointermove', onPointerMove);
+            window.removeEventListener('pointerup', onPointerUp);
+        }
+
+        /* =====================================================================
+           DESELECT & KEYBOARD SHORTCUTS
+           ===================================================================== */
+        function setupCanvasDeselect() {
+            const scrollArea = document.getElementById('canvas-scroll-area');
+            scrollArea.addEventListener('pointerdown', (e) => {
+                if (
+                    e.target === scrollArea ||
+                    e.target.classList.contains('sheet-wrapper') ||
+                    e.target.id === 'dummy-sheet' ||
+                    e.target.id === 'canvas-layer'
+                ) {
+                    if (selectedId !== null || inlineEditingId !== null) {
+                        selectedId = null;
+                        inlineEditingId = null;
+                        renderAll();
+                    }
+                }
+            });
+        }
+
+        function setupKeyboardShortcuts() {
+            document.addEventListener('keydown', (e) => {
+                const activeTag = document.activeElement ? document.activeElement.tagName : '';
+                const isTyping = activeTag === 'INPUT' || activeTag === 'TEXTAREA' || activeTag === 'SELECT';
+
+                // Undo: Ctrl/Cmd + Z
+                if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'z' && !isTyping) {
+                    e.preventDefault();
+                    undo();
+                    return;
+                }
+
+                // Duplicate: Ctrl/Cmd + D
+                if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'd') {
+                    e.preventDefault();
+                    if (selectedId && !isTyping) {
+                        duplicateSelected();
+                    }
+                    return;
+                }
+
+                if (isTyping || !selectedId) return;
+
+                // Delete / Backspace
+                if (e.key === 'Delete' || e.key === 'Backspace') {
+                    e.preventDefault();
+                    deleteSelected();
+                    return;
+                }
+
+                // Arrow key nudging (1px, or 12px / 1p with Shift)
+                const arrowKeys = ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'];
+                if (arrowKeys.includes(e.key)) {
+                    e.preventDefault();
+                    const block = blocks.find(b => b.id === selectedId);
+                    if (!block) return;
+
+                    pushUndoState();
+                    const step = e.shiftKey ? PICA_PX : 1;
+                    if (e.key === 'ArrowUp')    block.y = Math.max(0, block.y - step);
+                    if (e.key === 'ArrowDown')  block.y = Math.min(SHEET_HEIGHT - block.h, block.y + step);
+                    if (e.key === 'ArrowLeft')  block.x = Math.max(0, block.x - step);
+                    if (e.key === 'ArrowRight') block.x = Math.min(SHEET_WIDTH - block.w, block.x + step);
+
+                    renderAll();
+                }
+            });
+        }
+
+        /* =====================================================================
+           EXPORT WIREFRAME CODE (SEMANTIC HTML5 + CSS, STICKY NOTES EXCLUDED)
+           ===================================================================== */
+        function openExportCodeModal() {
+            const wireframeBlocks = blocks.filter(b => b.type !== 'sticky');
+            const stickyCount = blocks.filter(b => b.type === 'sticky').length;
+
+            const noticeText = document.getElementById('export-exclusion-text');
+            if (stickyCount > 0) {
+                noticeText.textContent = `${stickyCount} personal Sticky Note${stickyCount > 1 ? 's were' : ' was'} excluded so only your clean structural wireframe blocks appear in the code.`;
+            } else {
+                noticeText.textContent = 'Personal Sticky Notes are strictly excluded from exported HTML/CSS wireframe code.';
+            }
+
+            document.getElementById('wireframe-code-output').textContent = generateSemanticWireframeCode(wireframeBlocks);
+            openModal('export-code-modal');
+        }
+
+        function generateSemanticWireframeCode(wireframeBlocks) {
+            // Sort top-to-bottom, then left-to-right for clean semantic reading order
+            const sorted = [...wireframeBlocks].sort((a, b) => (a.y - b.y) || (a.x - b.x));
+
+            const elementsHTML = sorted.map((b) => {
+                const leftPct = ((b.x / SHEET_WIDTH) * 100).toFixed(2);
+                const topPct = ((b.y / SHEET_HEIGHT) * 100).toFixed(2);
+                const widthPct = ((b.w / SHEET_WIDTH) * 100).toFixed(2);
+                const heightPct = ((b.h / SHEET_HEIGHT) * 100).toFixed(2);
+                const safeLabel = escapeHTML(b.label || b.type);
+                const picaComment = `<!-- ${formatPica(b.w)} × ${formatPica(b.h)} -->`;
+
+                if (b.type === 'headline') {
+                    return `    ${picaComment}\n    <header class="wf-block wf-headline" style="left:${leftPct}%; top:${topPct}%; width:${widthPct}%; height:${heightPct}%;">\n      <h2>${safeLabel}</h2>\n    </header>`;
+                }
+                if (b.type === 'photo') {
+                    return `    ${picaComment}\n    <figure class="wf-block wf-photo" style="left:${leftPct}%; top:${topPct}%; width:${widthPct}%; height:${heightPct}%;">\n      <span>${safeLabel}</span>\n    </figure>`;
+                }
+                if (b.type === 'text') {
+                    return `    ${picaComment}\n    <article class="wf-block wf-copy" style="left:${leftPct}%; top:${topPct}%; width:${widthPct}%; height:${heightPct}%;">\n      <h3>${safeLabel}</h3>\n      <p>Portfolio body copy column placeholder...</p>\n    </article>`;
+                }
+                if (b.type === 'caption') {
+                    return `    ${picaComment}\n    <figcaption class="wf-block wf-caption" style="left:${leftPct}%; top:${topPct}%; width:${widthPct}%; height:${heightPct}%;">\n      ${safeLabel}\n    </figcaption>`;
+                }
+                if (b.type === 'rule') {
+                    return `    ${picaComment}\n    <hr class="wf-block wf-rule" style="left:${leftPct}%; top:${topPct}%; width:${widthPct}%; height:${heightPct}%;" aria-label="${safeLabel}">`;
+                }
+                return '';
+            }).join('\n\n');
+
+            return `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>1965 Layout Dummy — Web Wireframe (45p × 60p)</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: system-ui, -apple-system, sans-serif;
+      background: #f5f3ef;
+      color: #2b2927;
+      padding: 24px;
+      display: flex;
+      justify-content: center;
     }
-    ctx.fillText(line, x, currY);
-  }
-
-  function escapeHtml(str) {
-    return String(str)
-      .replace(/&/g, "&amp;")
-      .replace(/</g, "&lt;")
-      .replace(/>/g, "&gt;")
-      .replace(/"/g, "&quot;");
-  }
-
-  // Event Listeners
-  document.querySelectorAll("[data-add-type]").forEach((btn) => {
-    btn.addEventListener("click", () => addBlock(btn.dataset.addType));
-  });
-
-  toggleGrid.addEventListener("change", () => {
-    dummyPage.classList.toggle("show-grid", toggleGrid.checked);
-  });
-
-  toggleSnap.addEventListener("change", () => {
-    snapToGrid = toggleSnap.checked;
-  });
-
-  btnUndo.addEventListener("click", undo);
-
-  btnReset.addEventListener("click", () => {
-    saveHistory();
-    blocks = getDefaultLayout();
-    selectedId = null;
-    render();
-  });
-
-  btnClear.addEventListener("click", () => {
-    saveHistory();
-    blocks = [];
-    selectedId = null;
-    render();
-  });
-
-  selectedLabelInput.addEventListener("input", (e) => {
-    const selected = blocks.find((b) => b.id === selectedId);
-    if (!selected) return;
-    selected.label = e.target.value;
-    const domLabel = blocksLayer.querySelector(
-      `.layout-block[data-id="${selected.id}"] .block-label, .layout-block[data-id="${selected.id}"] .sticky-header span:first-child`
-    );
-    if (domLabel) domLabel.textContent = selected.label;
-  });
-
-  btnForward.addEventListener("click", () => moveLayer(1));
-  btnBackward.addEventListener("click", () => moveLayer(-1));
-  btnDuplicate.addEventListener("click", duplicateSelected);
-  btnDelete.addEventListener("click", deleteSelected);
-
-  // Deselect when clicking empty paper
-  dummyPage.addEventListener("mousedown", (e) => {
-    if (e.target === dummyPage || e.target === blocksLayer) {
-      selectedId = null;
-      render();
+    /* Proportional 45p × 60p Page Container */
+    .wireframe-page {
+      position: relative;
+      width: 100%;
+      max-width: 720px;
+      aspect-ratio: 45 / 60;
+      background: #ffffff;
+      border: 2px solid #2b2927;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
     }
-  });
-
-  // Keyboard Shortcuts (Undo, Duplicate, Delete, Arrow Nudge)
-  window.addEventListener("keydown", (e) => {
-    const activeTag = document.activeElement?.tagName;
-    const isTyping = activeTag === "INPUT" || activeTag === "TEXTAREA";
-
-    if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "z") {
-      if (!isTyping) {
-        e.preventDefault();
-        undo();
-      }
-      return;
+    .wf-block {
+      position: absolute;
+      border: 1.5px solid #2b2927;
+      padding: 0.6rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      overflow: hidden;
     }
-
-    if (isTyping || !selectedId) return;
-
-    if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "d") {
-      e.preventDefault();
-      duplicateSelected();
-      return;
+    .wf-photo {
+      background: #eae6df;
+      align-items: center;
+      text-align: center;
+      font-weight: 600;
+      font-size: 0.85rem;
     }
-
-    if (e.key === "Delete" || e.key === "Backspace") {
-      e.preventDefault();
-      deleteSelected();
-      return;
+    .wf-headline {
+      align-items: center;
+      text-align: center;
+      font-family: Georgia, serif;
     }
-
-    const step = e.shiftKey ? 1 : PICA;
-    const selected = blocks.find((b) => b.id === selectedId);
-    if (!selected) return;
-
-    if (["ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown"].includes(e.key)) {
-      e.preventDefault();
-      saveHistory();
-      if (e.key === "ArrowLeft") selected.x = clamp(selected.x - step, 0, PAGE_W - selected.w);
-      if (e.key === "ArrowRight") selected.x = clamp(selected.x + step, 0, PAGE_W - selected.w);
-      if (e.key === "ArrowUp") selected.y = clamp(selected.y - step, 0, PAGE_H - selected.h);
-      if (e.key === "ArrowDown") selected.y = clamp(selected.y + step, 0, PAGE_H - selected.h);
-      render();
+    .wf-copy {
+      justify-content: flex-start;
+      gap: 0.4rem;
+      font-size: 0.82rem;
     }
-  });
+    .wf-caption {
+      border-style: dashed;
+      align-items: center;
+      text-align: center;
+      font-style: italic;
+      font-size: 0.78rem;
+    }
+    .wf-rule {
+      border: none;
+      border-top: 2px solid #2b2927;
+      padding: 0;
+    }
+  </style>
+</head>
+<body>
+  <main class="wireframe-page">
+${elementsHTML}
+  </main>
+</body>
+</html>`;
+        }
 
-  // Modal Controls
-  btnExportCode.addEventListener("click", openWireframeModal);
-  btnCloseModal.addEventListener("click", () => exportModal.classList.add("hidden"));
-  exportModal.addEventListener("click", (e) => {
-    if (e.target === exportModal) exportModal.classList.add("hidden");
-  });
+        function copyWireframeCode() {
+            const code = document.getElementById('wireframe-code-output').textContent;
+            const temp = document.createElement('textarea');
+            temp.value = code;
+            document.body.appendChild(temp);
+            temp.select();
+            document.execCommand('copy');
+            document.body.removeChild(temp);
+            showToast('Wireframe HTML/CSS code copied to clipboard');
+        }
 
-  btnCopyCode.addEventListener("click", () => {
-    navigator.clipboard.writeText(exportedCodeOutput.textContent).then(() => {
-      const orig = btnCopyCode.textContent;
-      btnCopyCode.textContent = "Copied!";
-      setTimeout(() => (btnCopyCode.textContent = orig), 1500);
-    });
-  });
+        function downloadWireframeHTML() {
+            const code = document.getElementById('wireframe-code-output').textContent;
+            const blob = new Blob([code], { type: 'text/html;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `1965-wireframe-45x60p-${currentPresetKey}.html`;
+            a.click();
+            URL.revokeObjectURL(url);
+            showToast('Downloaded wireframe .html file');
+        }
 
-  btnExportPng.addEventListener("click", downloadPngSnapshot);
+        /* =====================================================================
+           EXPORT PNG SNAPSHOT (2X HIGH-DPI: 1080px × 1440px)
+           ===================================================================== */
+        function openSnapshotModal() {
+            refreshSnapshotPreview();
+            openModal('snapshot-modal');
+        }
 
-  // Initialize
-  buildRulers();
-  render();
-})();
+        function refreshSnapshotPreview() {
+            const includeStickies = document.getElementById('chk-include-sticky-png').checked;
+            const dataUrl = renderSheetToOffscreenCanvas(includeStickies);
+            document.getElementById('snapshot-preview-img').src = dataUrl;
+        }
+
+        function downloadSnapshotPNG() {
+            const includeStickies = document.getElementById('chk-include-sticky-png').checked;
+            const dataUrl = renderSheetToOffscreenCanvas(includeStickies);
+            const a = document.createElement('a');
+            a.href = dataUrl;
+            a.download = '1965-layout-dummy-45x60p.png';
+            a.click();
+            closeModal('snapshot-modal');
+            showToast('Downloaded 1965-layout-dummy-45x60p.png');
+        }
+
+        function renderSheetToOffscreenCanvas(includeStickies) {
+            const scale = 2; // 2x high-DPI output (1080 × 1440)
+            const canvas = document.getElementById('offscreen-canvas');
+            const ctx = canvas.getContext('2d');
+            canvas.width = SHEET_WIDTH * scale;
+            canvas.height = SHEET_HEIGHT * scale;
+
+            ctx.save();
+            ctx.scale(scale, scale);
+
+            // 1. Aged 1965 Cream Newsprint Base
+            ctx.fillStyle = '#f4efe4';
+            ctx.fillRect(0, 0, SHEET_WIDTH, SHEET_HEIGHT);
+
+            // Outer border
+            ctx.strokeStyle = '#cfc3ae';
+            ctx.lineWidth = 1.5;
+            ctx.strokeRect(0.75, 0.75, SHEET_WIDTH - 1.5, SHEET_HEIGHT - 1.5);
+
+            // 2. Pica Grid & 3p Margins (if enabled)
+            if (showGuides) {
+                // Minor 12px (1p) lines
+                ctx.strokeStyle = 'rgba(84, 128, 164, 0.22)';
+                ctx.lineWidth = 0.75;
+                for (let x = 12; x < SHEET_WIDTH; x += 12) {
+                    ctx.beginPath();
+                    ctx.moveTo(x, 0);
+                    ctx.lineTo(x, SHEET_HEIGHT);
+                    ctx.stroke();
+                }
+                for (let y = 12; y < SHEET_HEIGHT; y += 12) {
+                    ctx.beginPath();
+                    ctx.moveTo(0, y);
+                    ctx.lineTo(SHEET_WIDTH, y);
+                    ctx.stroke();
+                }
+
+                // Major 72px (6p) lines
+                ctx.strokeStyle = 'rgba(68, 112, 148, 0.36)';
+                ctx.lineWidth = 1;
+                for (let x = 72; x < SHEET_WIDTH; x += 72) {
+                    ctx.beginPath();
+                    ctx.moveTo(x, 0);
+                    ctx.lineTo(x, SHEET_HEIGHT);
+                    ctx.stroke();
+                }
+                for (let y = 72; y < SHEET_HEIGHT; y += 72) {
+                    ctx.beginPath();
+                    ctx.moveTo(0, y);
+                    ctx.lineTo(SHEET_WIDTH, y);
+                    ctx.stroke();
+                }
+
+                // Dashed 3p (36px) Margin Guides on all 4 sides
+                ctx.save();
+                ctx.setLineDash([5, 4]);
+                ctx.strokeStyle = 'rgba(43, 41, 39, 0.38)';
+                ctx.lineWidth = 1.25;
+                ctx.strokeRect(36, 36, SHEET_WIDTH - 72, SHEET_HEIGHT - 72);
+                ctx.restore();
+            }
+
+            // 3. Top Slug / Header Line
+            ctx.fillStyle = 'rgba(43, 41, 39, 0.58)';
+            ctx.font = '9.5px "Courier Prime", monospace';
+            ctx.fillText('1965 YEARBOOK LAYOUT DUMMY • SINGLE SHEET 45p × 60p', 36, 20);
+            ctx.textAlign = 'right';
+            ctx.fillText('1p = 12px', SHEET_WIDTH - 36, 20);
+            ctx.textAlign = 'left';
+
+            ctx.beginPath();
+            ctx.strokeStyle = 'rgba(43, 41, 39, 0.2)';
+            ctx.lineWidth = 1;
+            ctx.moveTo(36, 24);
+            ctx.lineTo(SHEET_WIDTH - 36, 24);
+            ctx.stroke();
+
+            // 4. Draw Blocks in Stacking Order
+            blocks.forEach(b => {
+                if (b.type === 'sticky' && !includeStickies) return;
+
+                ctx.save();
+                if (b.type === 'sticky') {
+                    ctx.translate(b.x + b.w / 2, b.y + b.h / 2);
+                    ctx.rotate((-1.3 * Math.PI) / 180);
+                    ctx.translate(-b.w / 2, -b.h / 2);
+
+                    ctx.shadowColor = 'rgba(34, 26, 18, 0.28)';
+                    ctx.shadowBlur = 12;
+                    ctx.shadowOffsetY = 6;
+                    ctx.fillStyle = '#fef08a';
+                    ctx.fillRect(0, 0, b.w, b.h);
+
+                    ctx.shadowColor = 'transparent';
+                    ctx.strokeStyle = '#eab308';
+                    ctx.lineWidth = 1;
+                    ctx.strokeRect(0, 0, b.w, b.h);
+
+                    ctx.fillStyle = 'rgba(234, 179, 8, 0.3)';
+                    ctx.fillRect(0, 0, b.w, 22);
+
+                    ctx.fillStyle = '#422006';
+                    ctx.font = '600 15px "Caveat", cursive';
+                    wrapCanvasText(ctx, b.label || '', 10, 38, b.w - 20, 18);
+                } else {
+                    ctx.translate(b.x, b.y);
+                    ctx.strokeStyle = '#2b2927';
+                    ctx.lineWidth = 2;
+
+                    if (b.type === 'photo') {
+                        ctx.fillStyle = 'rgba(232, 224, 208, 0.74)';
+                        ctx.fillRect(0, 0, b.w, b.h);
+                        ctx.strokeRect(0, 0, b.w, b.h);
+
+                        // Diagonal pencil X crosshairs
+                        ctx.beginPath();
+                        ctx.lineWidth = 1.4;
+                        ctx.moveTo(0, 0);
+                        ctx.lineTo(b.w, b.h);
+                        ctx.moveTo(b.w, 0);
+                        ctx.lineTo(0, b.h);
+                        ctx.stroke();
+
+                        const tagText = `${b.label || 'Photo Block'} (${formatPica(b.w)}×${formatPica(b.h)})`;
+                        ctx.font = 'bold 10.5px "Courier Prime", monospace';
+                        const tagW = Math.min(b.w - 12, ctx.measureText(tagText).width + 10);
+                        ctx.fillStyle = 'rgba(244, 239, 228, 0.94)';
+                        ctx.fillRect(6, 6, tagW, 17);
+                        ctx.fillStyle = '#2b2927';
+                        ctx.fillText(tagText, 10, 18, b.w - 18);
+                    } else if (b.type === 'headline') {
+                        ctx.fillStyle = 'rgba(244, 239, 228, 0.88)';
+                        ctx.fillRect(0, 0, b.w, b.h);
+                        ctx.strokeRect(0, 0, b.w, b.h);
+
+                        const fontSize = Math.max(14, Math.min(28, Math.round(b.h * 0.44)));
+                        ctx.fillStyle = '#2b2927';
+                        ctx.font = `800 ${fontSize}px "Playfair Display", Georgia, serif`;
+                        ctx.textAlign = 'center';
+                        ctx.textBaseline = 'middle';
+                        ctx.fillText(b.label || 'HEADLINE', b.w / 2, b.h / 2, b.w - 16);
+                    } else if (b.type === 'text') {
+                        ctx.fillStyle = 'rgba(248, 244, 235, 0.76)';
+                        ctx.fillRect(0, 0, b.w, b.h);
+                        ctx.strokeRect(0, 0, b.w, b.h);
+
+                        ctx.fillStyle = '#2b2927';
+                        ctx.font = 'bold 10.5px "Courier Prime", monospace';
+                        ctx.fillText((b.label || 'BODY COPY').toUpperCase(), 8, 17, b.w - 16);
+
+                        ctx.beginPath();
+                        ctx.lineWidth = 1.4;
+                        ctx.moveTo(8, 22);
+                        ctx.lineTo(b.w - 8, 22);
+                        ctx.stroke();
+
+                        ctx.strokeStyle = 'rgba(43, 41, 39, 0.45)';
+                        ctx.lineWidth = 1;
+                        for (let ly = 33; ly < b.h - 8; ly += 11) {
+                            ctx.beginPath();
+                            ctx.moveTo(8, ly);
+                            ctx.lineTo(b.w - 8, ly);
+                            ctx.stroke();
+                        }
+                    } else if (b.type === 'caption') {
+                        ctx.fillStyle = 'rgba(242, 236, 223, 0.85)';
+                        ctx.fillRect(0, 0, b.w, b.h);
+                        ctx.save();
+                        ctx.setLineDash([5, 3]);
+                        ctx.lineWidth = 1.5;
+                        ctx.strokeRect(0, 0, b.w, b.h);
+                        ctx.restore();
+
+                        ctx.fillStyle = '#2b2927';
+                        ctx.font = 'italic 11px "Courier Prime", monospace';
+                        wrapCanvasText(ctx, b.label || 'Caption', 8, 16, b.w - 16, 14);
+                    } else if (b.type === 'rule') {
+                        const midY = b.h / 2;
+                        ctx.beginPath();
+                        ctx.lineWidth = 2;
+                        ctx.moveTo(4, midY - 2);
+                        ctx.lineTo(b.w - 4, midY - 2);
+                        ctx.stroke();
+
+                        ctx.beginPath();
+                        ctx.lineWidth = 1;
+                        ctx.moveTo(4, midY + 2);
+                        ctx.lineTo(b.w - 4, midY + 2);
+                        ctx.stroke();
+                    }
+                }
+                ctx.restore();
+            });
+
+            ctx.restore();
+            return canvas.toDataURL('image/png');
+        }
+
+        function wrapCanvasText(ctx, text, x, y, maxWidth, lineHeight) {
+            const paragraphs = text.split('\n');
+            let curY = y;
+            paragraphs.forEach(p => {
+                const words = p.split(' ');
+                let line = '';
+                for (let n = 0; n < words.length; n++) {
+                    const testLine = line + words[n] + ' ';
+                    if (ctx.measureText(testLine).width > maxWidth && n > 0) {
+                        ctx.fillText(line.trim(), x, curY);
+                        line = words[n] + ' ';
+                        curY += lineHeight;
+                    } else {
+                        line = testLine;
+                    }
+                }
+                ctx.fillText(line.trim(), x, curY);
+                curY += lineHeight;
+            });
+        }
+
+        /* =====================================================================
+           MODAL & TOAST HELPERS
+           ===================================================================== */
+        function openModal(id) {
+            document.getElementById(id).classList.add('open');
+        }
+
+        function closeModal(id) {
+            document.getElementById(id).classList.remove('open');
+        }
+
+        document.querySelectorAll('.modal-backdrop').forEach(backdrop => {
+            backdrop.addEventListener('click', (e) => {
+                if (e.target === backdrop) {
+                    backdrop.classList.remove('open');
+                }
+            });
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                document.querySelectorAll('.modal-backdrop.open').forEach(m => m.classList.remove('open'));
+            }
+        });
+
+        let toastTimer = null;
+        function showToast(msg) {
+            const toast = document.getElementById('toast');
+            toast.textContent = msg;
+            toast.classList.add('show');
+            clearTimeout(toastTimer);
+            toastTimer = setTimeout(() => {
+                toast.classList.remove('show');
+            }, 2600);
+        }
+
+        function escapeHTML(str) {
+            return String(str)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;');
+        }

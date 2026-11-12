@@ -1,215 +1,381 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>1965 Yearbook Layout Dummy — Interactive Drafting Table</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link
-    href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=Courier+Prime:ital,wght@0,400;0,700;1,400&family=Inter:wght@400;500;600&display=swap"
-    rel="stylesheet"
-  />
-  <link rel="stylesheet" href="style.css" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quips UI</title>
+    <!-- Google Fonts: Courier Prime, Playfair Display, Inter, and Caveat -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;600;700&family=Courier+Prime:ital,wght@0,400;0,700;1,400&family=Inter:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,700;0,800;1,700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <div class="app-shell">
-    <!-- Left Sidebar Toolbox -->
-    <aside class="sidebar" aria-label="Drafting Tools">
-      <div class="brand">
-        <span class="brand-badge">SPECIAL COLLECTIONS ARCHIVE</span>
-        <h1>1965 Layout Dummy</h1>
-        <p class="brand-sub">Single-Page Sheet &bull; 45p &times; 60p</p>
-      </div>
-
-      <section class="tool-section">
-        <h2>Layout Blocks</h2>
-        <p class="section-hint">Click to add to the drafting sheet</p>
-        <div class="block-palette">
-          <button type="button" class="palette-btn" data-add-type="photo">
-            <span class="palette-icon icon-photo" aria-hidden="true"></span>
-            <span class="palette-text">
-              <strong>Photo Box</strong>
-              <small>WP: Image / Cover</small>
-            </span>
-          </button>
-
-          <button type="button" class="palette-btn" data-add-type="text">
-            <span class="palette-icon icon-text" aria-hidden="true"></span>
-            <span class="palette-text">
-              <strong>Text Column</strong>
-              <small>WP: Paragraph / Columns</small>
-            </span>
-          </button>
-
-          <button type="button" class="palette-btn" data-add-type="headline">
-            <span class="palette-icon icon-headline" aria-hidden="true"></span>
-            <span class="palette-text">
-              <strong>Headline</strong>
-              <small>WP: Heading (H1/H2)</small>
-            </span>
-          </button>
-
-          <button type="button" class="palette-btn" data-add-type="caption">
-            <span class="palette-icon icon-caption" aria-hidden="true"></span>
-            <span class="palette-text">
-              <strong>Caption / Folio</strong>
-              <small>WP: Caption / Quote</small>
-            </span>
-          </button>
-
-          <button type="button" class="palette-btn palette-btn-sticky" data-add-type="sticky">
-            <span class="palette-icon icon-sticky" aria-hidden="true"></span>
-            <span class="palette-text">
-              <strong>Sticky Note</strong>
-              <small>Personal note (not exported)</small>
-            </span>
-          </button>
-        </div>
-      </section>
-
-      <section class="tool-section">
-        <h2>Display Guides</h2>
-        <label class="toggle-row">
-          <input type="checkbox" id="toggleGrid" checked />
-          <span>Pica Grid &amp; Margins</span>
-        </label>
-        <label class="toggle-row">
-          <input type="checkbox" id="toggleSnap" checked />
-          <span>Snap to Grid (1 pica)</span>
-        </label>
-      </section>
-
-      <section class="tool-section">
-        <h2>Sheet Actions</h2>
-        <div class="action-grid">
-          <button type="button" id="btnUndo" class="secondary-btn" disabled>Undo</button>
-          <button type="button" id="btnReset" class="secondary-btn">Reset 1965 Dummy</button>
-          <button type="button" id="btnClear" class="secondary-btn">Blank Page</button>
-        </div>
-      </section>
-
-      <section class="tool-section export-section">
-        <h2>Export &amp; Wireframe</h2>
-        <button type="button" id="btnExportCode" class="primary-btn">
-          View Wireframe HTML/CSS
-        </button>
-        <button type="button" id="btnExportPng" class="secondary-btn full-width">
-          Download PNG Snapshot
-        </button>
-        <label class="toggle-row small-toggle">
-          <input type="checkbox" id="includeStickyPng" />
-          <span>Include sticky notes in PNG</span>
-        </label>
-      </section>
-    </aside>
-
-    <!-- Main Drafting Desk Area -->
-    <main class="workspace">
-      <!-- Slim Contextual Bar -->
-      <header class="context-bar" id="contextBar">
-        <div id="contextEmpty" class="context-empty">
-          Click any element on the <strong>45p &times; 60p</strong> layout sheet to move, resize, rename, or duplicate it.
-        </div>
-
-        <div id="contextActive" class="context-active hidden">
-          <div class="context-group">
-            <span id="selectedTypeBadge" class="type-badge">PHOTO BOX</span>
-            <label class="label-editor">
-              <span>Label:</span>
-              <input
-                type="text"
-                id="selectedLabelInput"
-                maxlength="48"
-                placeholder="Block label..."
-              />
-            </label>
-          </div>
-
-          <div class="context-group">
-            <span id="selectedMetrics" class="metrics-readout">
-              W: 18p (40%) &bull; H: 15p (25%) &bull; X: 3p, Y: 9p
-            </span>
-          </div>
-
-          <div class="context-group context-buttons">
-            <button type="button" id="btnForward" class="ctx-btn" title="Bring Forward">
-              Forward
-            </button>
-            <button type="button" id="btnBackward" class="ctx-btn" title="Send Backward">
-              Backward
-            </button>
-            <button type="button" id="btnDuplicate" class="ctx-btn" title="Duplicate (Ctrl/Cmd+D)">
-              Duplicate
-            </button>
-            <button type="button" id="btnDelete" class="ctx-btn ctx-btn-danger" title="Delete (Del)">
-              Delete
-            </button>
-          </div>
-        </div>
-      </header>
-
-      <!-- Drafting Table & 45p x 60p Page Sheet -->
-      <div class="desk-scroll">
-        <div class="sheet-wrapper">
-          <!-- Top Pica Ruler -->
-          <div class="ruler ruler-top" id="rulerTop" aria-hidden="true"></div>
-          <!-- Left Pica Ruler -->
-          <div class="ruler ruler-left" id="rulerLeft" aria-hidden="true"></div>
-
-          <!-- The 45p x 60p Single-Page Dummy -->
-          <div
-            id="dummyPage"
-            class="dummy-page show-grid"
-            tabindex="0"
-            aria-label="1965 Yearbook Single-Page Layout Dummy, 45 picas by 60 picas"
-          >
-            <!-- Registration Crop Marks -->
-            <span class="crop-mark crop-tl" aria-hidden="true"></span>
-            <span class="crop-mark crop-tr" aria-hidden="true"></span>
-            <span class="crop-mark crop-bl" aria-hidden="true"></span>
-            <span class="crop-mark crop-br" aria-hidden="true"></span>
-
-            <!-- 3-Pica Margin Frame -->
-            <div class="margin-guide" aria-hidden="true"></div>
-
-            <!-- Archival Sheet Header Stamp -->
-            <div class="sheet-stamp" aria-hidden="true">
-              YEARBOOK DUMMY &mdash; SINGLE PAGE (45p &times; 60p)
+    <div class="app-shell">
+        <!-- =================================================================
+             TOP HEADER BAR
+             ================================================================= -->
+        <header class="top-header">
+            <div class="brand-group">
+                <div class="brand-badge" aria-hidden="true">
+                    <!-- Inline SVG Single-Sheet Drafting Icon -->
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                        <polyline points="14 2 14 8 20 8"></polyline>
+                        <line x1="8" y1="13" x2="16" y2="13"></line>
+                        <line x1="8" y1="17" x2="16" y2="17"></line>
+                    </svg>
+                </div>
+                <div class="brand-titles">
+                    <h1>1965 Yearbook Layout Dummy</h1>
+                    <p>Interactive Print-to-Web Wireframing Table (45p &times; 60p)</p>
+                </div>
             </div>
 
-            <!-- Interactive Blocks Container -->
-            <div id="blocksLayer" class="blocks-layer"></div>
-          </div>
-        </div>
-      </div>
-    </main>
-  </div>
+            <div class="header-actions">
+                <button id="btn-undo" class="btn" onclick="undo()" disabled title="Undo last change (Ctrl/Cmd + Z)">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M3 7v6h6"></path>
+                        <path d="M21 17a9 9 0 0 0-9-9 9 9 0 0 0-6 2.3L3 13"></path>
+                    </svg>
+                    <span>Undo</span>
+                </button>
 
-  <!-- Wireframe Code Export Modal -->
-  <div id="exportModal" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
-    <div class="modal-card">
-      <div class="modal-header">
-        <div>
-          <h2 id="modalTitle">Wireframe Structure &amp; WordPress Block Mapping</h2>
-          <p class="modal-sub">
-            Converted from your 45p &times; 60p dummy layout (personal sticky notes are automatically excluded).
-          </p>
-        </div>
-        <button type="button" id="btnCloseModal" class="close-modal-btn" aria-label="Close modal">&times;</button>
-      </div>
+                <button class="btn btn-secondary" onclick="openSnapshotModal()" title="Export 2x high-DPI PNG image of your 45p × 60p dummy sheet">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                        <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                        <polyline points="21 15 16 10 5 21"></polyline>
+                    </svg>
+                    <span>Export PNG</span>
+                </button>
 
-      <div class="modal-body">
-        <div class="mapping-summary" id="wpMappingSummary"></div>
-        <div class="code-header">
-          <span>Generated Responsive HTML + CSS Wireframe</span>
-          <button type="button" id="btnCopyCode" class="ctx-btn">Copy Code</button>
+                <button class="btn btn-primary" onclick="openExportCodeModal()" title="Generate semantic HTML5 & CSS wireframe code (Sticky Notes excluded)">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="16 18 22 12 16 6"></polyline>
+                        <polyline points="8 6 2 12 8 18"></polyline>
+                    </svg>
+                    <span>Export Wireframe Code</span>
+                </button>
+            </div>
+        </header>
+
+        <!-- =================================================================
+             2-COLUMN MAIN WORKSPACE (LEFT SIDEBAR + CENTRAL DRAFTING DESK)
+             ================================================================= -->
+        <div class="workspace-body">
+            <!-- LEFT TOOL SIDEBAR (270px wide) -->
+            <aside class="left-sidebar">
+                <!-- 1. Layout Blocks -->
+                <div class="sidebar-section">
+                    <div class="section-heading">
+                        <span>Layout Blocks</span>
+                        <span style="font-weight: 400; font-size: 0.64rem;">Click or Drag</span>
+                    </div>
+                    <div class="block-palette">
+                        <button class="palette-item" draggable="true" data-block-type="photo" onclick="addBlock('photo')">
+                            <div class="palette-icon">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <rect x="3" y="3" width="18" height="18" rx="1"></rect>
+                                    <line x1="3" y1="3" x2="21" y2="21"></line>
+                                    <line x1="21" y1="3" x2="3" y2="21"></line>
+                                </svg>
+                            </div>
+                            <div class="palette-text">
+                                <span class="palette-title">Photo Block</span>
+                                <span class="palette-sub">Graphite frame with diagonal pencil X</span>
+                            </div>
+                        </button>
+
+                        <button class="palette-item" draggable="true" data-block-type="headline" onclick="addBlock('headline')">
+                            <div class="palette-icon">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M6 4v16"></path>
+                                    <path d="M18 4v16"></path>
+                                    <path d="M6 12h12"></path>
+                                </svg>
+                            </div>
+                            <div class="palette-text">
+                                <span class="palette-title">Headline</span>
+                                <span class="palette-sub">Bold vintage display typography box</span>
+                            </div>
+                        </button>
+
+                        <button class="palette-item" draggable="true" data-block-type="text" onclick="addBlock('text')">
+                            <div class="palette-icon">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <line x1="4" y1="6" x2="20" y2="6"></line>
+                                    <line x1="4" y1="10" x2="20" y2="10"></line>
+                                    <line x1="4" y1="14" x2="20" y2="14"></line>
+                                    <line x1="4" y1="18" x2="14" y2="18"></line>
+                                </svg>
+                            </div>
+                            <div class="palette-text">
+                                <span class="palette-title">Body Copy Column</span>
+                                <span class="palette-sub">Ruled horizontal placeholder lines</span>
+                            </div>
+                        </button>
+
+                        <button class="palette-item" draggable="true" data-block-type="caption" onclick="addBlock('caption')">
+                            <div class="palette-icon">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-dasharray="3 2">
+                                    <rect x="3" y="6" width="18" height="12" rx="1"></rect>
+                                    <line x1="7" y1="12" x2="17" y2="12" stroke-dasharray="none"></line>
+                                </svg>
+                            </div>
+                            <div class="palette-text">
+                                <span class="palette-title">Caption / Cutline</span>
+                                <span class="palette-sub">Compact italic cutline box</span>
+                            </div>
+                        </button>
+
+                        <button class="palette-item" draggable="true" data-block-type="rule" onclick="addBlock('rule')">
+                            <div class="palette-icon">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <line x1="3" y1="10" x2="21" y2="10" stroke-width="2.5"></line>
+                                    <line x1="3" y1="14" x2="21" y2="14" stroke-width="1.2"></line>
+                                </svg>
+                            </div>
+                            <div class="palette-text">
+                                <span class="palette-title">Rule / Divider</span>
+                                <span class="palette-sub">Horizontal graphite decorative rule</span>
+                            </div>
+                        </button>
+
+                        <button class="palette-item sticky-palette" draggable="true" data-block-type="sticky" onclick="addBlock('sticky')">
+                            <div class="palette-icon">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M15.5 3H5a2 2 0 0 0-2 2v14c0 1.1.9 2 2 2h14a2 2 0 0 0 2-2V8.5L15.5 3Z"></path>
+                                    <path d="M15 3v6h6"></path>
+                                </svg>
+                            </div>
+                            <div class="palette-text">
+                                <span class="palette-title">Sticky Note</span>
+                                <span class="palette-sub">Scratchpad (excluded from wireframe)</span>
+                            </div>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 2. Display Guides (Only 2 Checkboxes) -->
+                <div class="sidebar-section">
+                    <div class="section-heading">
+                        <span>Display Guides</span>
+                    </div>
+                    <label class="guide-toggle">
+                        <span>Pica Grid &amp; Margins</span>
+                        <input type="checkbox" id="toggle-grid" checked onchange="toggleGuides()">
+                    </label>
+                    <label class="guide-toggle">
+                        <span>Snap to Grid (1p)</span>
+                        <input type="checkbox" id="toggle-snap" checked onchange="toggleSnap()">
+                    </label>
+                </div>
+
+                <!-- 3. Page Presets (45p × 60p) -->
+                <div class="sidebar-section">
+                    <div class="section-heading">
+                        <span>Page Presets (45p &times; 60p)</span>
+                    </div>
+                    <select id="preset-selector" class="preset-select" onchange="handlePresetChange(this.value)" aria-label="Select 45p by 60p page preset">
+                        <option value="feature">1965 Feature Story</option>
+                        <option value="club">Club / Organization Page</option>
+                        <option value="portraits">Senior Portraits &amp; Bio</option>
+                        <option value="blank">Blank 45p &times; 60p Sheet</option>
+                    </select>
+                    <button class="btn btn-sm" onclick="resetCurrentPreset()" style="width: 100%;">
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path>
+                            <path d="M3 3v5h5"></path>
+                        </svg>
+                        <span>Reset Page Preset</span>
+                    </button>
+                </div>
+
+                <div class="sidebar-tip">
+                    <strong>Drafting Shortcuts:</strong><br>
+                    &bull; Double-click any block to edit its label.<br>
+                    &bull; Click inside a Sticky Note to type ideas.<br>
+                    &bull; <strong>Arrow keys</strong> nudge 1px (<strong>Shift</strong>: 12px / 1p).<br>
+                    &bull; <strong>Ctrl/Cmd+D</strong> duplicates &bull; <strong>Del</strong> removes.
+                </div>
+            </aside>
+
+            <!-- CENTRAL DRAFTING WORKSPACE -->
+            <main class="drafting-stage">
+                <!-- Slim Contextual Bar Directly Above Drafting Desk -->
+                <div class="context-bar" id="context-bar">
+                    <div class="context-idle" id="context-idle">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#d97706" stroke-width="2">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <line x1="12" y1="16" x2="12" y2="12"></line>
+                            <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                        </svg>
+                        <span>Click any block on the 45p &times; 60p sheet to move, resize, edit label, or add a personal Sticky Note.</span>
+                    </div>
+
+                    <div class="context-active" id="context-active">
+                        <span class="context-type-pill" id="ctx-type">PHOTO BLOCK</span>
+
+                        <div class="context-label-group" id="ctx-label-wrapper">
+                            <label for="ctx-label-input">Label / Text:</label>
+                            <input type="text" id="ctx-label-input" class="context-input" placeholder="Enter block label..." oninput="handleContextLabelInput(this.value)">
+                        </div>
+
+                        <div class="context-metrics" id="ctx-metrics">
+                            X: 3p  Y: 3p  |  W: 39p (87%) &times; H: 21p
+                        </div>
+
+                        <div class="context-buttons">
+                            <button class="btn btn-sm" onclick="bringForward()" title="Bring Forward">
+                                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <polyline points="18 15 12 9 6 15"></polyline>
+                                </svg>
+                                <span>Bring Forward</span>
+                            </button>
+
+                            <button class="btn btn-sm" onclick="sendBackward()" title="Send Backward">
+                                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <polyline points="6 9 12 15 18 9"></polyline>
+                                </svg>
+                                <span>Send Backward</span>
+                            </button>
+
+                            <button class="btn btn-sm" onclick="duplicateSelected()" title="Duplicate (Ctrl/Cmd + D)">
+                                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                                    <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                                </svg>
+                                <span>Duplicate</span>
+                            </button>
+
+                            <button class="btn btn-sm btn-danger" onclick="deleteSelected()" title="Delete (Backspace / Delete)">
+                                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <polyline points="3 6 5 6 21 6"></polyline>
+                                    <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                                </svg>
+                                <span>Delete</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Scrollable Drafting Desk Surface -->
+                <div class="canvas-scroll-area" id="canvas-scroll-area">
+                    <div class="sheet-wrapper">
+                        <!-- Print-Shop Registration Crop Marks at the 4 Outer Corners -->
+                        <div class="crop-mark crop-tl"></div>
+                        <div class="crop-mark crop-tr"></div>
+                        <div class="crop-mark crop-bl"></div>
+                        <div class="crop-mark crop-br"></div>
+
+                        <!-- Single-Page 45p × 60p Aged Cream Layout Sheet (540px × 720px, No Gutter) -->
+                        <div class="dummy-sheet" id="dummy-sheet">
+                            <!-- Top Print-Shop Slug Line -->
+                            <div class="sheet-slug-header">
+                                <span>1965 YEARBOOK LAYOUT DUMMY &bull; SINGLE SHEET 45p &times; 60p</span>
+                                <span>1p = 12px</span>
+                            </div>
+
+                            <!-- Optional Pica Grid (1p = 12px) & 3p (36px) Margin Guides -->
+                            <div class="pica-grid-overlay" id="pica-grid-overlay"></div>
+                            <div class="sheet-margin-overlay" id="sheet-margin-overlay"></div>
+
+                            <!-- Interactive Wireframe Blocks & Sticky Notes Layer -->
+                            <div class="canvas-layer" id="canvas-layer"></div>
+                        </div>
+                    </div>
+                </div>
+            </main>
         </div>
-        <pre id="exportedCodeOutput" class="code-block"></pre>
-      </div>
     </div>
-  </div>
 
-  <script src="script.js"></script>
+    <!-- =====================================================================
+         MODAL 1: EXPORT WIREFRAME CODE (HTML5 + CSS GRID/FLEXBOX)
+         ===================================================================== -->
+    <div class="modal-backdrop" id="export-code-modal" role="dialog" aria-modal="true" aria-labelledby="export-code-title">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h2 id="export-code-title">Semantic HTML5 &amp; CSS Wireframe Blueprint (45p &times; 60p)</h2>
+                <button class="modal-close" onclick="closeModal('export-code-modal')" aria-label="Close modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="exclusion-notice" id="export-exclusion-notice">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <line x1="12" y1="8" x2="12" y2="12"></line>
+                        <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                    </svg>
+                    <span id="export-exclusion-text">Personal Sticky Notes are strictly excluded from exported HTML/CSS wireframe code.</span>
+                </div>
+
+                <div>
+                    <div class="section-heading" style="margin-bottom: 6px;">
+                        <span>Responsive Web Wireframe Code (aspect-ratio: 45 / 60)</span>
+                    </div>
+                    <pre class="code-block" id="wireframe-code-output"></pre>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" onclick="copyWireframeCode()">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                        <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                    </svg>
+                    <span>Copy Code</span>
+                </button>
+                <button class="btn" onclick="downloadWireframeHTML()">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                        <polyline points="7 10 12 15 17 10"></polyline>
+                        <line x1="12" y1="15" x2="12" y2="3"></line>
+                    </svg>
+                    <span>Download .HTML</span>
+                </button>
+                <button class="btn" onclick="closeModal('export-code-modal')">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- =====================================================================
+         MODAL 2: EXPORT PNG SNAPSHOT (2X HIGH-DPI)
+         ===================================================================== -->
+    <div class="modal-backdrop" id="snapshot-modal" role="dialog" aria-modal="true" aria-labelledby="snapshot-modal-title">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h2 id="snapshot-modal-title">Export PNG Snapshot (45p &times; 60p High-DPI)</h2>
+                <button class="modal-close" onclick="closeModal('snapshot-modal')" aria-label="Close modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <label class="guide-toggle" style="background-color: #1c1714;">
+                    <span>Include Sticky Notes in PNG</span>
+                    <input type="checkbox" id="chk-include-sticky-png" onchange="refreshSnapshotPreview()">
+                </label>
+
+                <div class="snapshot-preview-wrap">
+                    <img id="snapshot-preview-img" alt="High-DPI preview of 1965 layout dummy sheet">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" onclick="downloadSnapshotPNG()">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                        <polyline points="7 10 12 15 17 10"></polyline>
+                        <line x1="12" y1="15" x2="12" y2="3"></line>
+                    </svg>
+                    <span>Download 1965-layout-dummy-45x60p.png</span>
+                </button>
+                <button class="btn" onclick="closeModal('snapshot-modal')">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+    <!-- Offscreen Canvas (1080 × 1440 = 2x crisp high-DPI output of 540 × 720) -->
+    <canvas id="offscreen-canvas" width="1080" height="1440" style="display: none;"></canvas>
+
+<script src="script.js"></script>
 </body>
 </html>
