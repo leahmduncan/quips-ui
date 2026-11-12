@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>1965 Yearbook Layout Dummy — Interactive Drafting Table</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=Courier+Prime:ital,wght@0,400;0,700;1,400&family=Inter:wght@400;500;600&display=swap"
+    rel="stylesheet"
+  />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="app-shell">
+    <!-- Left Sidebar Toolbox -->
+    <aside class="sidebar" aria-label="Drafting Tools">
+      <div class="brand">
+        <span class="brand-badge">SPECIAL COLLECTIONS ARCHIVE</span>
+        <h1>1965 Layout Dummy</h1>
+        <p class="brand-sub">Single-Page Sheet &bull; 45p &times; 60p</p>
+      </div>
+
+      <section class="tool-section">
+        <h2>Layout Blocks</h2>
+        <p class="section-hint">Click to add to the drafting sheet</p>
+        <div class="block-palette">
+          <button type="button" class="palette-btn" data-add-type="photo">
+            <span class="palette-icon icon-photo" aria-hidden="true"></span>
+            <span class="palette-text">
+              <strong>Photo Box</strong>
+              <small>WP: Image / Cover</small>
+            </span>
+          </button>
+
+          <button type="button" class="palette-btn" data-add-type="text">
+            <span class="palette-icon icon-text" aria-hidden="true"></span>
+            <span class="palette-text">
+              <strong>Text Column</strong>
+              <small>WP: Paragraph / Columns</small>
+            </span>
+          </button>
+
+          <button type="button" class="palette-btn" data-add-type="headline">
+            <span class="palette-icon icon-headline" aria-hidden="true"></span>
+            <span class="palette-text">
+              <strong>Headline</strong>
+              <small>WP: Heading (H1/H2)</small>
+            </span>
+          </button>
+
+          <button type="button" class="palette-btn" data-add-type="caption">
+            <span class="palette-icon icon-caption" aria-hidden="true"></span>
+            <span class="palette-text">
+              <strong>Caption / Folio</strong>
+              <small>WP: Caption / Quote</small>
+            </span>
+          </button>
+
+          <button type="button" class="palette-btn palette-btn-sticky" data-add-type="sticky">
+            <span class="palette-icon icon-sticky" aria-hidden="true"></span>
+            <span class="palette-text">
+              <strong>Sticky Note</strong>
+              <small>Personal note (not exported)</small>
+            </span>
+          </button>
+        </div>
+      </section>
+
+      <section class="tool-section">
+        <h2>Display Guides</h2>
+        <label class="toggle-row">
+          <input type="checkbox" id="toggleGrid" checked />
+          <span>Pica Grid &amp; Margins</span>
+        </label>
+        <label class="toggle-row">
+          <input type="checkbox" id="toggleSnap" checked />
+          <span>Snap to Grid (1 pica)</span>
+        </label>
+      </section>
+
+      <section class="tool-section">
+        <h2>Sheet Actions</h2>
+        <div class="action-grid">
+          <button type="button" id="btnUndo" class="secondary-btn" disabled>Undo</button>
+          <button type="button" id="btnReset" class="secondary-btn">Reset 1965 Dummy</button>
+          <button type="button" id="btnClear" class="secondary-btn">Blank Page</button>
+        </div>
+      </section>
+
+      <section class="tool-section export-section">
+        <h2>Export &amp; Wireframe</h2>
+        <button type="button" id="btnExportCode" class="primary-btn">
+          View Wireframe HTML/CSS
+        </button>
+        <button type="button" id="btnExportPng" class="secondary-btn full-width">
+          Download PNG Snapshot
+        </button>
+        <label class="toggle-row small-toggle">
+          <input type="checkbox" id="includeStickyPng" />
+          <span>Include sticky notes in PNG</span>
+        </label>
+      </section>
+    </aside>
+
+    <!-- Main Drafting Desk Area -->
+    <main class="workspace">
+      <!-- Slim Contextual Bar -->
+      <header class="context-bar" id="contextBar">
+        <div id="contextEmpty" class="context-empty">
+          Click any element on the <strong>45p &times; 60p</strong> layout sheet to move, resize, rename, or duplicate it.
+        </div>
+
+        <div id="contextActive" class="context-active hidden">
+          <div class="context-group">
+            <span id="selectedTypeBadge" class="type-badge">PHOTO BOX</span>
+            <label class="label-editor">
+              <span>Label:</span>
+              <input
+                type="text"
+                id="selectedLabelInput"
+                maxlength="48"
+                placeholder="Block label..."
+              />
+            </label>
+          </div>
+
+          <div class="context-group">
+            <span id="selectedMetrics" class="metrics-readout">
+              W: 18p (40%) &bull; H: 15p (25%) &bull; X: 3p, Y: 9p
+            </span>
+          </div>
+
+          <div class="context-group context-buttons">
+            <button type="button" id="btnForward" class="ctx-btn" title="Bring Forward">
+              Forward
+            </button>
+            <button type="button" id="btnBackward" class="ctx-btn" title="Send Backward">
+              Backward
+            </button>
+            <button type="button" id="btnDuplicate" class="ctx-btn" title="Duplicate (Ctrl/Cmd+D)">
+              Duplicate
+            </button>
+            <button type="button" id="btnDelete" class="ctx-btn ctx-btn-danger" title="Delete (Del)">
+              Delete
+            </button>
+          </div>
+        </div>
+      </header>
+
+      <!-- Drafting Table & 45p x 60p Page Sheet -->
+      <div class="desk-scroll">
+        <div class="sheet-wrapper">
+          <!-- Top Pica Ruler -->
+          <div class="ruler ruler-top" id="rulerTop" aria-hidden="true"></div>
+          <!-- Left Pica Ruler -->
+          <div class="ruler ruler-left" id="rulerLeft" aria-hidden="true"></div>
+
+          <!-- The 45p x 60p Single-Page Dummy -->
+          <div
+            id="dummyPage"
+            class="dummy-page show-grid"
+            tabindex="0"
+            aria-label="1965 Yearbook Single-Page Layout Dummy, 45 picas by 60 picas"
+          >
+            <!-- Registration Crop Marks -->
+            <span class="crop-mark crop-tl" aria-hidden="true"></span>
+            <span class="crop-mark crop-tr" aria-hidden="true"></span>
+            <span class="crop-mark crop-bl" aria-hidden="true"></span>
+            <span class="crop-mark crop-br" aria-hidden="true"></span>
+
+            <!-- 3-Pica Margin Frame -->
+            <div class="margin-guide" aria-hidden="true"></div>
+
+            <!-- Archival Sheet Header Stamp -->
+            <div class="sheet-stamp" aria-hidden="true">
+              YEARBOOK DUMMY &mdash; SINGLE PAGE (45p &times; 60p)
+            </div>
+
+            <!-- Interactive Blocks Container -->
+            <div id="blocksLayer" class="blocks-layer"></div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- Wireframe Code Export Modal -->
+  <div id="exportModal" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <div class="modal-card">
+      <div class="modal-header">
+        <div>
+          <h2 id="modalTitle">Wireframe Structure &amp; WordPress Block Mapping</h2>
+          <p class="modal-sub">
+            Converted from your 45p &times; 60p dummy layout (personal sticky notes are automatically excluded).
+          </p>
+        </div>
+        <button type="button" id="btnCloseModal" class="close-modal-btn" aria-label="Close modal">&times;</button>
+      </div>
+
+      <div class="modal-body">
+        <div class="mapping-summary" id="wpMappingSummary"></div>
+        <div class="code-header">
+          <span>Generated Responsive HTML + CSS Wireframe</span>
+          <button type="button" id="btnCopyCode" class="ctx-btn">Copy Code</button>
+        </div>
+        <pre id="exportedCodeOutput" class="code-block"></pre>
+      </div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>

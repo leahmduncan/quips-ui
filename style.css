@@ -1,0 +1,852 @@
+:root {
+  /* Scale: 1 pica = 12px -> 45p = 540px, 60p = 720px */
+  --pica: 12px;
+  --page-w: 540px;
+  --page-h: 720px;
+
+  --desk-bg: #26201c;
+  --sidebar-bg: #1c1815;
+  --sidebar-border: #38302a;
+  --paper-bg: #f4efe4;
+  --paper-edge: #dfd6c3;
+  --graphite: #2f2d2a;
+  --graphite-muted: #69645c;
+  --blue-pencil: #2563eb;
+  --sticky-bg: #fef08a;
+  --sticky-border: #eab308;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+  background-color: var(--desk-bg);
+  color: #f3efe8;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.app-shell {
+  display: flex;
+  height: 100vh;
+  width: 100vw;
+}
+
+/* ---------------- Sidebar ---------------- */
+.sidebar {
+  width: 270px;
+  flex-shrink: 0;
+  background-color: var(--sidebar-bg);
+  border-right: 1px solid var(--sidebar-border);
+  padding: 18px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  overflow-y: auto;
+}
+
+.brand-badge {
+  display: inline-block;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  color: #d6c7b2;
+  background: #2c2520;
+  border: 1px solid #453a32;
+  padding: 3px 7px;
+  border-radius: 3px;
+  margin-bottom: 6px;
+}
+
+.brand h1 {
+  margin: 0;
+  font-family: "Courier Prime", monospace;
+  font-size: 19px;
+  color: #f7f3eb;
+}
+
+.brand-sub {
+  margin: 4px 0 0;
+  font-size: 12px;
+  color: #a89f94;
+}
+
+.tool-section {
+  border-top: 1px solid var(--sidebar-border);
+  padding-top: 14px;
+}
+
+.tool-section h2 {
+  margin: 0 0 6px;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #b8afa4;
+}
+
+.section-hint {
+  margin: 0 0 10px;
+  font-size: 11px;
+  color: #877e74;
+}
+
+.block-palette {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.palette-btn {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  text-align: left;
+  background: #27211d;
+  border: 1px solid #3d342e;
+  color: #f3efe8;
+  padding: 8px 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s, transform 0.1s;
+}
+
+.palette-btn:hover {
+  background: #332b26;
+  border-color: #6b5c51;
+}
+
+.palette-btn:active {
+  transform: translateY(1px);
+}
+
+.palette-btn-sticky {
+  border-color: #574b22;
+  background: #2b2618;
+}
+
+.palette-btn-sticky:hover {
+  background: #38311d;
+  border-color: #a1882a;
+}
+
+.palette-text {
+  display: flex;
+  flex-direction: column;
+}
+
+.palette-text strong {
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.palette-text small {
+  font-size: 11px;
+  color: #9e958b;
+}
+
+/* Mini Palette Icons */
+.palette-icon {
+  width: 28px;
+  height: 24px;
+  flex-shrink: 0;
+  border-radius: 2px;
+  position: relative;
+}
+
+.icon-photo {
+  background: #ebe4d5;
+  border: 1.5px solid #2f2d2a;
+  background-image: linear-gradient(
+      to top right,
+      transparent calc(50% - 1px),
+      #2f2d2a calc(50% - 1px),
+      #2f2d2a calc(50% + 1px),
+      transparent calc(50% + 1px)
+    ),
+    linear-gradient(
+      to bottom right,
+      transparent calc(50% - 1px),
+      #2f2d2a calc(50% - 1px),
+      #2f2d2a calc(50% + 1px),
+      transparent calc(50% + 1px)
+    );
+}
+
+.icon-text {
+  background: #ebe4d5;
+  border: 1.5px solid #2f2d2a;
+  background-image: repeating-linear-gradient(
+    to bottom,
+    transparent 0px,
+    transparent 4px,
+    #2f2d2a 4px,
+    #2f2d2a 5.5px
+  );
+}
+
+.icon-headline {
+  background: #ebe4d5;
+  border: 1.5px solid #2f2d2a;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.icon-headline::after {
+  content: "H1";
+  font-family: "Courier Prime", monospace;
+  font-weight: 700;
+  font-size: 12px;
+  color: #2f2d2a;
+}
+
+.icon-caption {
+  background: #ebe4d5;
+  border: 1.5px dashed #2f2d2a;
+}
+
+.icon-sticky {
+  background: var(--sticky-bg);
+  border: 1px solid var(--sticky-border);
+  transform: rotate(-3deg);
+}
+
+/* Toggles & Action Buttons */
+.toggle-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: #ded8ce;
+  margin-bottom: 8px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.small-toggle {
+  font-size: 12px;
+  color: #a89f94;
+  margin-top: 8px;
+  margin-bottom: 0;
+}
+
+.action-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 7px;
+}
+
+.action-grid button:first-child {
+  grid-column: span 2;
+}
+
+.primary-btn,
+.secondary-btn {
+  padding: 8px 10px;
+  border-radius: 5px;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  border: 1px solid transparent;
+  transition: background 0.15s, opacity 0.15s;
+}
+
+.primary-btn {
+  width: 100%;
+  background: #d97706;
+  color: #fff;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.primary-btn:hover {
+  background: #b45309;
+}
+
+.secondary-btn {
+  background: #2b2420;
+  border-color: #453a33;
+  color: #ebe5dc;
+}
+
+.secondary-btn:hover:not(:disabled) {
+  background: #382f2a;
+}
+
+.secondary-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.full-width {
+  width: 100%;
+}
+
+/* ---------------- Workspace & Context Bar ---------------- */
+.workspace {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  background-color: var(--desk-bg);
+  background-image: radial-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 0);
+  background-size: 20px 20px;
+}
+
+.context-bar {
+  height: 50px;
+  flex-shrink: 0;
+  background: #211c18;
+  border-bottom: 1px solid var(--sidebar-border);
+  padding: 0 18px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.context-empty {
+  font-size: 13px;
+  color: #a89f94;
+}
+
+.context-active {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.hidden {
+  display: none !important;
+}
+
+.context-group {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.type-badge {
+  font-family: "Courier Prime", monospace;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: 3px;
+  background: #362e28;
+  color: #f3efe8;
+  border: 1px solid #54473e;
+}
+
+.label-editor {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: #b8afa4;
+}
+
+.label-editor input {
+  background: #171411;
+  border: 1px solid #4a3f37;
+  color: #f7f3eb;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-family: "Courier Prime", monospace;
+  font-size: 13px;
+  width: 190px;
+}
+
+.label-editor input:focus {
+  outline: none;
+  border-color: #d97706;
+}
+
+.metrics-readout {
+  font-family: "Courier Prime", monospace;
+  font-size: 12px;
+  color: #cfc6ba;
+  background: #191512;
+  padding: 4px 10px;
+  border-radius: 4px;
+  border: 1px solid #362e28;
+}
+
+.ctx-btn {
+  background: #2e2722;
+  border: 1px solid #4a3f37;
+  color: #efeae1;
+  padding: 5px 9px;
+  border-radius: 4px;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.ctx-btn:hover {
+  background: #3d342d;
+}
+
+.ctx-btn-danger {
+  border-color: #7f1d1d;
+  color: #fca5a5;
+}
+
+.ctx-btn-danger:hover {
+  background: #7f1d1d;
+  color: #fff;
+}
+
+/* ---------------- Drafting Sheet & Rulers ---------------- */
+.desk-scroll {
+  flex: 1;
+  overflow: auto;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 28px 36px 48px;
+}
+
+.sheet-wrapper {
+  position: relative;
+  padding-top: 22px;
+  padding-left: 26px;
+}
+
+.ruler {
+  position: absolute;
+  font-family: "Courier Prime", monospace;
+  font-size: 9px;
+  color: #9e9488;
+  user-select: none;
+}
+
+.ruler-top {
+  top: 0;
+  left: 26px;
+  width: var(--page-w);
+  height: 20px;
+  border-bottom: 1px solid #594f47;
+}
+
+.ruler-left {
+  top: 22px;
+  left: 0;
+  width: 24px;
+  height: var(--page-h);
+  border-right: 1px solid #594f47;
+}
+
+.ruler-tick-x {
+  position: absolute;
+  bottom: 0;
+  border-left: 1px solid #6e6259;
+  padding-left: 2px;
+  height: 10px;
+}
+
+.ruler-tick-y {
+  position: absolute;
+  right: 0;
+  border-top: 1px solid #6e6259;
+  padding-right: 3px;
+  width: 14px;
+  text-align: right;
+}
+
+/* Single-Page 45p x 60p Aged Newsprint Sheet */
+.dummy-page {
+  position: relative;
+  width: var(--page-w);
+  height: var(--page-h);
+  background-color: var(--paper-bg);
+  background-image: radial-gradient(rgba(92, 78, 56, 0.08) 1px, transparent 0),
+    linear-gradient(135deg, rgba(255, 255, 255, 0.25) 0%, rgba(196, 182, 155, 0.18) 100%);
+  background-size: 16px 16px, 100% 100%;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.55), 0 0 0 1px #c7bca6;
+  overflow: hidden;
+  outline: none;
+}
+
+/* 1-Pica (12px) Grid Overlay */
+.dummy-page.show-grid::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: linear-gradient(to right, rgba(66, 115, 168, 0.14) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(66, 115, 168, 0.14) 1px, transparent 1px);
+  background-size: var(--pica) var(--pica);
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* 3-Pica (36px) Margin Guide */
+.margin-guide {
+  position: absolute;
+  inset: 36px; /* 3 picas */
+  border: 1px dashed rgba(185, 65, 65, 0.35);
+  pointer-events: none;
+  z-index: 1;
+  display: none;
+}
+
+.dummy-page.show-grid .margin-guide {
+  display: block;
+}
+
+/* Printer Registration Crop Marks */
+.crop-mark {
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  border-color: rgba(47, 45, 42, 0.45);
+  border-style: solid;
+  pointer-events: none;
+  z-index: 2;
+}
+.crop-tl { top: 8px; left: 8px; border-width: 1px 0 0 1px; }
+.crop-tr { top: 8px; right: 8px; border-width: 1px 1px 0 0; }
+.crop-bl { bottom: 8px; left: 8px; border-width: 0 0 1px 1px; }
+.crop-br { bottom: 8px; right: 8px; border-width: 0 1px 1px 0; }
+
+.sheet-stamp {
+  position: absolute;
+  top: 12px;
+  left: 36px;
+  font-family: "Courier Prime", monospace;
+  font-size: 10px;
+  letter-spacing: 0.06em;
+  color: rgba(47, 45, 42, 0.55);
+  pointer-events: none;
+  z-index: 2;
+}
+
+.blocks-layer {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+}
+
+/* ---------------- Manipulable Layout Blocks ---------------- */
+.layout-block {
+  position: absolute;
+  cursor: move;
+  user-select: none;
+  color: var(--graphite);
+  transition: box-shadow 0.1s;
+}
+
+.layout-block.selected {
+  outline: 2px solid var(--blue-pencil);
+  outline-offset: 1px;
+  box-shadow: 0 6px 18px rgba(37, 99, 235, 0.22);
+}
+
+/* 1. Photo Box (Penciled X-Cross) */
+.block-photo {
+  background-color: rgba(232, 224, 208, 0.85);
+  border: 2px solid var(--graphite);
+  background-image: linear-gradient(
+      to top right,
+      transparent calc(50% - 0.8px),
+      rgba(47, 45, 42, 0.65) calc(50% - 0.8px),
+      rgba(47, 45, 42, 0.65) calc(50% + 0.8px),
+      transparent calc(50% + 0.8px)
+    ),
+    linear-gradient(
+      to bottom right,
+      transparent calc(50% - 0.8px),
+      rgba(47, 45, 42, 0.65) calc(50% - 0.8px),
+      rgba(47, 45, 42, 0.65) calc(50% + 0.8px),
+      transparent calc(50% + 0.8px)
+    );
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px;
+}
+
+.block-photo .block-label {
+  background: var(--paper-bg);
+  border: 1px solid var(--graphite);
+  padding: 2px 6px;
+  font-family: "Courier Prime", monospace;
+  font-size: 11px;
+  font-weight: 700;
+  text-align: center;
+  max-width: 90%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* 2. Text Column (Ruled Pencil Lines) */
+.block-text {
+  background-color: rgba(244, 239, 228, 0.78);
+  border: 1.5px solid var(--graphite);
+  padding: 6px 8px;
+  display: flex;
+  flex-direction: column;
+}
+
+.block-text .block-label {
+  font-family: "Courier Prime", monospace;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  margin-bottom: 4px;
+  color: var(--graphite);
+  background: rgba(244, 239, 228, 0.9);
+  align-self: flex-start;
+  padding: 0 3px;
+}
+
+.block-text .ruled-lines {
+  flex: 1;
+  width: 100%;
+  background-image: repeating-linear-gradient(
+    to bottom,
+    transparent 0px,
+    transparent 7px,
+    rgba(47, 45, 42, 0.45) 7px,
+    rgba(47, 45, 42, 0.45) 8.5px
+  );
+}
+
+/* 3. Headline Block */
+.block-headline {
+  background-color: rgba(238, 231, 216, 0.88);
+  border: 2px solid var(--graphite);
+  padding: 4px 10px;
+  display: flex;
+  align-items: center;
+}
+
+.block-headline .block-label {
+  font-family: "Courier Prime", monospace;
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* 4. Caption / Folio Block */
+.block-caption {
+  background-color: rgba(244, 239, 228, 0.85);
+  border: 1.5px dashed var(--graphite);
+  padding: 4px 7px;
+  display: flex;
+  align-items: center;
+}
+
+.block-caption .block-label {
+  font-family: "Courier Prime", monospace;
+  font-style: italic;
+  font-size: 11px;
+  color: var(--graphite);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* 5. Personal Sticky Note (Excluded from Wireframe) */
+.block-sticky {
+  background-color: var(--sticky-bg);
+  border: 1px solid var(--sticky-border);
+  box-shadow: 2px 5px 12px rgba(0, 0, 0, 0.22);
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+}
+
+.sticky-header {
+  background: rgba(234, 179, 8, 0.35);
+  padding: 3px 7px;
+  font-family: "Inter", sans-serif;
+  font-size: 9px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #713f12;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: move;
+}
+
+.sticky-textarea {
+  flex: 1;
+  width: 100%;
+  border: none;
+  background: transparent;
+  resize: none;
+  padding: 6px 8px;
+  font-family: "Caveat", cursive;
+  font-size: 17px;
+  line-height: 1.2;
+  color: #422006;
+  outline: none;
+  cursor: text;
+}
+
+.sticky-textarea::placeholder {
+  color: rgba(113, 63, 18, 0.55);
+}
+
+/* Size Badge on Selected Block */
+.block-dim-tag {
+  position: absolute;
+  bottom: -18px;
+  right: 0;
+  background: var(--blue-pencil);
+  color: #fff;
+  font-family: "Courier Prime", monospace;
+  font-size: 10px;
+  padding: 1px 5px;
+  border-radius: 2px;
+  pointer-events: none;
+  white-space: nowrap;
+  display: none;
+}
+
+.layout-block.selected .block-dim-tag {
+  display: block;
+}
+
+/* 8-Point Resize Handles */
+.resize-handle {
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  background: #ffffff;
+  border: 1.5px solid var(--blue-pencil);
+  border-radius: 1px;
+  display: none;
+  z-index: 10;
+}
+
+.layout-block.selected .resize-handle {
+  display: block;
+}
+
+.handle-nw { top: -5px; left: -5px; cursor: nwse-resize; }
+.handle-n  { top: -5px; left: calc(50% - 4px); cursor: ns-resize; }
+.handle-ne { top: -5px; right: -5px; cursor: nesw-resize; }
+.handle-e  { top: calc(50% - 4px); right: -5px; cursor: ew-resize; }
+.handle-se { bottom: -5px; right: -5px; cursor: nwse-resize; }
+.handle-s  { bottom: -5px; left: calc(50% - 4px); cursor: ns-resize; }
+.handle-sw { bottom: -5px; left: -5px; cursor: nesw-resize; }
+.handle-w  { top: calc(50% - 4px); left: -5px; cursor: ew-resize; }
+
+/* ---------------- Export Modal ---------------- */
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 12, 10, 0.78);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  z-index: 100;
+}
+
+.modal-card {
+  background: #1f1a17;
+  border: 1px solid #453a32;
+  border-radius: 8px;
+  width: 100%;
+  max-width: 720px;
+  max-height: 86vh;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.65);
+}
+
+.modal-header {
+  padding: 16px 20px;
+  border-bottom: 1px solid #362e28;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.modal-header h2 {
+  margin: 0;
+  font-size: 16px;
+  color: #f7f3eb;
+}
+
+.modal-sub {
+  margin: 4px 0 0;
+  font-size: 12px;
+  color: #a89f94;
+}
+
+.close-modal-btn {
+  background: transparent;
+  border: none;
+  color: #a89f94;
+  font-size: 24px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.close-modal-btn:hover {
+  color: #fff;
+}
+
+.modal-body {
+  padding: 16px 20px 20px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.mapping-summary {
+  background: #29221e;
+  border: 1px solid #3f352e;
+  border-radius: 6px;
+  padding: 12px;
+  font-size: 12px;
+  color: #e6dfd5;
+}
+
+.mapping-summary ul {
+  margin: 6px 0 0;
+  padding-left: 18px;
+}
+
+.mapping-summary li {
+  margin-bottom: 4px;
+}
+
+.code-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 12px;
+  color: #b8afa4;
+}
+
+.code-block {
+  margin: 0;
+  background: #120f0d;
+  border: 1px solid #362e28;
+  border-radius: 6px;
+  padding: 14px;
+  font-family: "Courier Prime", monospace;
+  font-size: 12px;
+  line-height: 1.45;
+  color: #e5dec9;
+  overflow-x: auto;
+  white-space: pre;
+}
