@@ -10,7 +10,7 @@
             --desk-muted: #b3a798;
             --accent-amber: #d97706;
             --accent-amber-hover: #ea8615;
-            --paper-cream: #f4efe4;
+            --paper-cream: #fff7dc;
             --graphite-dark: #2b2927;
             --graphite-mid: #57524e;
             --pica-blue: rgba(84, 128, 164, 0.22);
@@ -493,11 +493,37 @@
         /* =====================================================================
            SINGLE-PAGE 45p × 60p LAYOUT DUMMY SHEET (540px × 720px, NO GUTTER)
            ===================================================================== */
-        .sheet-wrapper {
+        
+        .zoom-controls {
+         display: inline-flex;
+         align-items: center;
+         gap: 3px;
+         background-color: #1c1714;
+         border: 1px solid var(--desk-border);
+         padding: 2px;
+         border-radius: 8px;
+      }
+
+        .zoom-readout {
+         min-width: 52px;
+         font-family: var(--font-typewriter);
+         background-color: transparent;
+         border-color: transparent;
+      }
+
+        .zoom-stage {
+         position: relative;
+         width: 576px;  /* 540px sheet + 36px wrapper padding */
+         height: 756px; /* 720px sheet + 36px wrapper padding */
+         flex-shrink: 0;
+      }
+        
+           .sheet-wrapper {
             position: relative;
             padding: 18px;
-            flex-shrink: 0;
-        }
+            transform-origin: top left;
+            transition: transform 0.12s ease-out;        
+      }
 
         /* Print-shop Registration Crop Marks at the 4 Outer Corners */
         .crop-mark {
@@ -593,7 +619,7 @@
         }
 
         .draft-block.wireframe-block {
-            border: 2px solid var(--graphite-dark);
+            border: 2px solid var(--desk-muted);
             box-shadow:
                 0 0 0 0.5px rgba(43, 41, 39, 0.32),
                 inset 0 0 0 1px rgba(43, 41, 39, 0.1);
@@ -684,7 +710,7 @@
 
         /* 3. Body Copy Column */
         .block-text {
-            background-color: rgba(248, 244, 235, 0.75);
+            background-color: #fff7dc;
             padding: 6px 8px;
             display: flex;
             flex-direction: column;

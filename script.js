@@ -16,7 +16,7 @@
                 { id: 5, type: 'text',  x: 250,  y: 230, w: 240, h: 200, label: 'Body Copy' },
             ],
             club: [
-                { id: 1, type: 'headline', x: 36,  y: 36,  w: 468, h: 48,  label: 'CAMPUS CHRONICLE & REVIEW' },
+                { id: 1, type: 'headline', x: 36,  y: 36,  w: 468, h: 48,  label: 'Page Title' },
                 { id: 2, type: 'rule',     x: 36,  y: 90,  w: 468, h: 18,  label: 'Header Divider Rule' },
                 { id: 3, type: 'photo',    x: 36,  y: 120, w: 468, h: 216, label: 'Group Photo: Editorial Board' },
                 { id: 4, type: 'caption',  x: 36,  y: 342, w: 468, h: 36,  label: 'Seated (L–R): M. Vance, Editor-in-Chief; R. Sterling, Managing Editor.' },
@@ -48,6 +48,13 @@
         let nextBlockId = 100;
         let showGuides = true;
         let snapEnabled = true;
+      
+        // Canvas Zoom State
+        let zoomLevel = 1;
+        const MIN_ZOOM = 0.5;  // 50%
+        const MAX_ZOOM = 2.5;  // 250%
+        const BASE_WRAPPER_W = SHEET_WIDTH + 36;  // 540 + 18px padding on each side = 576px
+        const BASE_WRAPPER_H = SHEET_HEIGHT + 36; // 720 + 18px padding on each side = 756px
 
         // Undo History Stack
         let undoStack = [];
@@ -151,6 +158,23 @@
 
         function snapValue(val) {
             return snapEnabled ? Math.round(val / PICA_PX) * PICA_PX : Math.round(val);
+        }
+
+        function changeZoom(delta) {
+          setZoom(zoomLevel + delta);
+        }
+
+        function setZoom(nextZoom) {
+          zoomLevel = Math.round(Math.max(MIN_ZOOM, Math.min(MAX_ZOOM, nextZoom)) * 10) / 10;
+
+          const stage = document.getElementById('zoom-stage');
+          const wrapper = document.getElementById('sheet-wrapper');
+          const label = document.getElementById('zoom-label');
+
+          wrapper.style.transform = `scale(${zoomLevel})`;
+          stage.style.width = `${Math.round(BASE_WRAPPER_W * zoomLevel)}px`;
+          stage.style.height = `${Math.round(BASE_WRAPPER_H * zoomLevel)}px`;
+          label.textContent = `${Math.round(zoomLevel * 100)}%`;
         }
 
         /* =====================================================================
@@ -271,8 +295,8 @@
                 const type = e.dataTransfer.getData('text/plain');
                 if (!type) return;
                 const rect = sheetEl.getBoundingClientRect();
-                const dropX = e.clientX - rect.left;
-                const dropY = e.clientY - rect.top;
+                const dropX = (e.clientX - rect.left) / zoomLevel;
+                const dropY = (e.clientY - rect.top) / zoomLevel;                
                 addBlock(type, dropX, dropY);
             });
         }
@@ -624,8 +648,8 @@
             const block = blocks.find(b => b.id === interaction.id);
             if (!block) return;
 
-            const dx = e.clientX - interaction.startX;
-            const dy = e.clientY - interaction.startY;
+            const dx = (e.clientX - interaction.startX) / zoomLevel;
+            const dy = (e.clientY - interaction.startY) / zoomLevel;
 
             if (Math.abs(dx) > 1 || Math.abs(dy) > 1) {
                 interaction.moved = true;

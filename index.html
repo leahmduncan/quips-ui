@@ -33,6 +33,12 @@
             </div>
 
             <div class="header-actions">
+              <div class="zoom-controls" role="group" aria-label="Canvas Zoom">
+               <button class="btn btn-sm" onclick="changeZoom(-0.1)" title="Zoom Out (Ctrl/Cmd + -)">&minus;</button>
+               <button class="btn btn-sm zoom-readout" id="zoom-label" onclick="setZoom(1)" title="Reset Zoom to 100%">100%</button>
+               <button class="btn btn-sm" onclick="changeZoom(0.1)" title="Zoom In (Ctrl/Cmd + +)">+</button>
+              </div>
+
                 <button id="btn-undo" class="btn" onclick="undo()" disabled title="Undo last change (Ctrl/Cmd + Z)">
                     <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <path d="M3 7v6h6"></path>
@@ -262,7 +268,8 @@
 
                 <!-- Scrollable Drafting Desk Surface -->
                 <div class="canvas-scroll-area" id="canvas-scroll-area">
-                    <div class="sheet-wrapper">
+                  <div class="zoom-stage" id="zoom-stage">
+                    <div class="sheet-wrapper" id="sheet-wrapper">
                         <!-- Print-Shop Registration Crop Marks at the 4 Outer Corners -->
                         <div class="crop-mark crop-tl"></div>
                         <div class="crop-mark crop-tr"></div>
@@ -285,7 +292,7 @@
                             <div class="canvas-layer" id="canvas-layer"></div>
                         </div>
                     </div>
-                </div>
+                  </div>
             </main>
         </div>
     </div>
