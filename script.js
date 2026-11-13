@@ -10,7 +10,7 @@
 
         const PAGE_PRESETS = {
             feature: [
-                { id: 1, type: 'photo', x: 10,  y: 36,  w: 520, h: 179, label: 'Hero Photo', imageURL: 'assets/hero-banner.jpg'},
+                { id: 1, type: 'photo', x: 0,  y: 36,  w: 540, h: 179, label: 'Hero Photo', imageURL: 'assets/hero-banner.jpg'},
                 { id: 2, type: 'photo', x: 48,  y: 230, w: 180, h: 452,  label: 'Tall Photo', imageURL: 'assets/hero-vertical.jpg' },
                 { id: 3, type: 'photo', x: 250, y: 442, w: 240, h: 240,  label: 'Photo Grid', imageURL: 'assets/hero-grid.jpg' },
                 { id: 5, type: 'text',  x: 250,  y: 230, w: 240, h: 200, label: 'Paragraph' },
@@ -24,18 +24,19 @@
                 { id: 6, type: 'photo',    x: 36, y: 385, w: 468, h: 300, label: 'Group Photo', imageURL: 'assets/title-group.jpg'},
             ],
             portraits: [
-                { id: 1, type: 'photo',    x: 36,  y: 36,  w: 132, h: 132, label: 'Portrait 1' },
-                { id: 2, type: 'caption',  x: 36,  y: 174, w: 132, h: 42,  label: 'Eleanor Hayes — History' },
-                { id: 3, type: 'photo',    x: 36,  y: 240, w: 132, h: 132, label: 'Portrait 2' },
-                { id: 4, type: 'caption',  x: 36,  y: 378, w: 132, h: 42,  label: 'David Mercer — Physics' },
-                { id: 5, type: 'photo',    x: 36,  y: 444, w: 132, h: 132, label: 'Portrait 3' },
-                { id: 6, type: 'caption',  x: 36,  y: 582, w: 132, h: 42,  label: 'Clara Lin — Literature' },
-                { id: 7, type: 'headline', x: 192, y: 36,  w: 312, h: 60,  label: 'CLASS OF 1965 PROFILES' },
-                { id: 8, type: 'rule',     x: 192, y: 102, w: 312, h: 18,  label: 'Bio Divider Rule' },
-                { id: 9, type: 'text',     x: 192, y: 132, w: 312, h: 492, label: 'Senior Biographies & Campus Honors' }
+                { id: 1, type: 'photo',    x: 36,  y: 36,  w: 228, h: 228, label: 'Anchor Photo', imageURL: 'assets/vertical-anchor.jpg' },
+                { id: 2, type: 'caption',  x: 36,  y: 270, w: 228, h: 24,  label: 'Class Officers'},
+                { id: 3, type: 'photo',    x: 36,  y: 300, w: 228, h: 126, label: 'Pair 1', imageURL: 'assets/vertical-duo-1.jpg' },
+                { id: 5, type: 'photo',    x: 36,  y: 426, w: 228, h: 126, label: 'Pair 2', imageURL: 'assets/vertical-duo-2.jpg'},
+                { id: 6, type: 'photo',    x: 36,  y: 552, w: 228, h: 126, label: 'Pair 3', imageURL: 'assets/vertical-duo-3.jpg'},
+                { id: 7, type: 'headline', x: 274, y: 36,  w: 228, h: 228,  label: '1965 Senior Class' },
+                { id: 8, type: 'rule',     x: 274, y: 280, w: 228, h: 12,  label: 'Separator' },
+                { id: 9, type: 'text',     x: 274, y: 300, w: 228, h: 115, label: 'Descriptive Text' },
+                { id: 10, type: 'text',    x: 274, y: 426, w: 228, h: 115, label: 'Descriptive Text' },
+                { id: 10, type: 'text',    x: 274, y: 552, w: 228, h: 115, label: 'Descriptive Text' },
             ],
             blank: []
-        };
+            };
 
         /* =====================================================================
            APPLICATION STATE
@@ -327,10 +328,10 @@
                     el.innerHTML = `
                         <div class="sticky-drag-bar" title="Drag Sticky Note">
                             <div class="sticky-grip"><span></span><span></span><span></span></div>
-                            <span style="font-size: 9px; font-weight: 700; color: #854d0e; letter-spacing: 0.05em;">SCRATCHPAD</span>
+                            <span style="font-size: 9px; font-weight: 700; color: #854d0e; letter-spacing: 0.05em;">Sticky Note</span>
                         </div>
                         <textarea class="sticky-textarea" placeholder="Write personal reminders or layout notes...">${escapeHTML(block.label)}</textarea>
-                        <div class="sticky-footer-tag">Personal Note — Excluded from Wireframe</div>
+                        <div class="sticky-footer-tag">Personal Note — Excluded from Export</div>
                     `;
 
                     const textarea = el.querySelector('.sticky-textarea');

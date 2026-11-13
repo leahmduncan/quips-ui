@@ -27,8 +27,8 @@
                     </svg>
                 </div>
                 <div class="brand-titles">
-                    <h1>1965 Yearbook Layout Dummy</h1>
-                    <p>Interactive Print-to-Web Wireframing Table (45p &times; 60p)</p>
+                    <h1>Quips UI</h1>
+                    <p>Quips & Cranks 1965 to Webpage User Interface</p>
                 </div>
             </div>
 
@@ -89,7 +89,6 @@
                             </div>
                             <div class="palette-text">
                                 <span class="palette-title">Photo Block</span>
-                                <span class="palette-sub">Graphite frame with diagonal pencil X</span>
                             </div>
                         </button>
 
@@ -103,7 +102,6 @@
                             </div>
                             <div class="palette-text">
                                 <span class="palette-title">Headline</span>
-                                <span class="palette-sub">Bold vintage display typography box</span>
                             </div>
                         </button>
 
@@ -117,8 +115,7 @@
                                 </svg>
                             </div>
                             <div class="palette-text">
-                                <span class="palette-title">Body Copy Column</span>
-                                <span class="palette-sub">Ruled horizontal placeholder lines</span>
+                                <span class="palette-title">Paragraph</span>
                             </div>
                         </button>
 
@@ -130,8 +127,7 @@
                                 </svg>
                             </div>
                             <div class="palette-text">
-                                <span class="palette-title">Caption / Cutline</span>
-                                <span class="palette-sub">Compact italic cutline box</span>
+                                <span class="palette-title">Caption</span>
                             </div>
                         </button>
 
@@ -143,8 +139,7 @@
                                 </svg>
                             </div>
                             <div class="palette-text">
-                                <span class="palette-title">Rule / Divider</span>
-                                <span class="palette-sub">Horizontal graphite decorative rule</span>
+                                <span class="palette-title">Separator</span>
                             </div>
                         </button>
 
@@ -157,7 +152,6 @@
                             </div>
                             <div class="palette-text">
                                 <span class="palette-title">Sticky Note</span>
-                                <span class="palette-sub">Scratchpad (excluded from wireframe)</span>
                             </div>
                         </button>
                     </div>
@@ -181,13 +175,13 @@
                 <!-- 3. Page Presets (45p × 60p) -->
                 <div class="sidebar-section">
                     <div class="section-heading">
-                        <span>Page Presets (45p &times; 60p)</span>
+                        <span>Page Presets</span>
                     </div>
                     <select id="preset-selector" class="preset-select" onchange="handlePresetChange(this.value)" aria-label="Select 45p by 60p page preset">
-                        <option value="feature">1965 Feature Story</option>
-                        <option value="club">Club / Organization Page</option>
-                        <option value="portraits">Senior Portraits &amp; Bio</option>
-                        <option value="blank">Blank 45p &times; 60p Sheet</option>
+                        <option value="feature">Hero Image Layout</option>
+                        <option value="club">Page With Title Layout</option>
+                        <option value="portraits">Two-Column Layout</option>
+                        <option value="blank">Blank Sheet</option>
                     </select>
                     <button class="btn btn-sm" onclick="resetCurrentPreset()" style="width: 100%;">
                         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -211,25 +205,13 @@
             <main class="drafting-stage">
                 <!-- Slim Contextual Bar Directly Above Drafting Desk -->
                 <div class="context-bar" id="context-bar">
-                    <div class="context-idle" id="context-idle">
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#d97706" stroke-width="2">
-                            <circle cx="12" cy="12" r="10"></circle>
-                            <line x1="12" y1="16" x2="12" y2="12"></line>
-                            <line x1="12" y1="8" x2="12.01" y2="8"></line>
-                        </svg>
-                        <span>Click any block on the 45p &times; 60p sheet to move, resize, edit label, or add a personal Sticky Note.</span>
-                    </div>
-
+                    <div class="context-idle" id="context-idle"></div>
                     <div class="context-active" id="context-active">
                         <span class="context-type-pill" id="ctx-type">PHOTO BLOCK</span>
 
                         <div class="context-label-group" id="ctx-label-wrapper">
                             <label for="ctx-label-input">Label / Text:</label>
                             <input type="text" id="ctx-label-input" class="context-input" placeholder="Enter block label..." oninput="handleContextLabelInput(this.value)">
-                        </div>
-
-                        <div class="context-metrics" id="ctx-metrics">
-                            X: 3p  Y: 3p  |  W: 39p (87%) &times; H: 21p
                         </div>
 
                         <div class="context-buttons">

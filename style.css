@@ -2,7 +2,7 @@
            DESIGN TOKENS & RESET
            ===================================================================== */
         :root {
-            --desk-bg: #2d2622;
+            --desk-bg:#A16844;
             --desk-surface: #221c19;
             --desk-panel: #2b2420;
             --desk-border: #433832;
@@ -689,7 +689,7 @@
 
         /* 2. Headline */
         .block-headline {
-            background-color: rgba(244, 239, 228, 0.88);
+            background-color: #fff7dc80;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -710,7 +710,7 @@
 
         /* 3. Body Copy Column */
         .block-text {
-            background-color: #fff7dc;
+            background-color: #fff7dc80;
             padding: 6px 8px;
             display: flex;
             flex-direction: column;
