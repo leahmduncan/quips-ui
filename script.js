@@ -11,19 +11,17 @@
         const PAGE_PRESETS = {
             feature: [
                 { id: 1, type: 'photo', x: 10,  y: 36,  w: 520, h: 179, label: 'Hero Photo', imageURL: 'assets/hero-banner.jpg'},
-                { id: 2, type: 'photo', x: 48,  y: 230, w: 180, h: 452,  label: 'Woman with Wreath', imageURL: 'assets/hero-vertical.jpg' },
+                { id: 2, type: 'photo', x: 48,  y: 230, w: 180, h: 452,  label: 'Tall Photo', imageURL: 'assets/hero-vertical.jpg' },
                 { id: 3, type: 'photo', x: 250, y: 442, w: 240, h: 240,  label: 'Photo Grid', imageURL: 'assets/hero-grid.jpg' },
-                { id: 5, type: 'text',  x: 250,  y: 230, w: 240, h: 200, label: 'Body Copy' },
+                { id: 5, type: 'text',  x: 250,  y: 230, w: 240, h: 200, label: 'Paragraph' },
             ],
             club: [
-                { id: 1, type: 'headline', x: 36,  y: 36,  w: 468, h: 48,  label: 'Page Title' },
-                { id: 2, type: 'rule',     x: 36,  y: 90,  w: 468, h: 18,  label: 'Header Divider Rule' },
-                { id: 3, type: 'photo',    x: 36,  y: 120, w: 468, h: 216, label: 'Group Photo: Editorial Board' },
-                { id: 4, type: 'caption',  x: 36,  y: 342, w: 468, h: 36,  label: 'Seated (L–R): M. Vance, Editor-in-Chief; R. Sterling, Managing Editor.' },
-                { id: 5, type: 'photo',    x: 36,  y: 396, w: 144, h: 144, label: 'Officer 1' },
-                { id: 6, type: 'photo',    x: 198, y: 396, w: 144, h: 144, label: 'Officer 2' },
-                { id: 7, type: 'photo',    x: 360, y: 396, w: 144, h: 144, label: 'Officer 3' },
-                { id: 8, type: 'text',     x: 36,  y: 552, w: 468, h: 120, label: 'Organization Roster & Year in Review' }
+                { id: 1, type: 'headline', x: 36,  y: 36,  w: 468, h: 48,  label: 'FRESHMAN COURT'},
+                { id: 3, type: 'photo',    x: 324,  y: 98, w: 180, h: 228, label: 'Headshot', imageURL: 'assets/title-headshot.jpg'},
+                { id: 8, type: 'text',     x: 36,  y: 98, w: 276, h: 248, label: 'Paragraph'},
+                { id: 4, type: 'caption',  x: 324,  y: 332, w: 180, h: 24,  label: 'Freshman Advisor' },
+                { id: 5, type: 'caption',  x: 36,  y: 355, w: 180, h: 24, label: 'Freshman Court Members'},
+                { id: 6, type: 'photo',    x: 36, y: 385, w: 468, h: 300, label: 'Group Photo', imageURL: 'assets/title-group.jpg'},
             ],
             portraits: [
                 { id: 1, type: 'photo',    x: 36,  y: 36,  w: 132, h: 132, label: 'Portrait 1' },
