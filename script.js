@@ -331,7 +331,6 @@
                             <span style="font-size: 9px; font-weight: 700; color: #854d0e; letter-spacing: 0.05em;">Sticky Note</span>
                         </div>
                         <textarea class="sticky-textarea" placeholder="Write personal reminders or layout notes...">${escapeHTML(block.label)}</textarea>
-                        <div class="sticky-footer-tag">Personal Note — Excluded from Export</div>
                     `;
 
                     const textarea = el.querySelector('.sticky-textarea');
@@ -582,7 +581,7 @@ function updateContextMetrics(block) {
         document.addEventListener('DOMContentLoaded', () => {
             const ctxInput = document.getElementById('ctx-label-input');
             if (!ctxInput) return;
-            
+
             ctxInput.addEventListener('focus', () => {
                 contextLabelBeforeSnapshot = JSON.stringify(blocks);
             });

@@ -22,7 +22,7 @@
             --font-ui: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
             --font-typewriter: 'Courier Prime', 'Courier New', Courier, monospace;
             --font-vintage-serif: 'Rock Salt', cursive;
-            --font-handwritten: 'Rock Salt', cursive;
+            --font-handwritten: 'Caveat', cursive;
         }
 
         * {
