@@ -4,10 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Quips UI</title>
-    <!-- Google Fonts: Courier Prime, Playfair Display, Inter, and Caveat -->
+    <!-- Google Fonts: Courier Prime, Rock Salt, Inter, and Caveat -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;600;700&family=Courier+Prime:ital,wght@0,400;0,700;1,400&family=Inter:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,700;0,800;1,700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;600;700&family=Courier+Prime:ital,wght@0,400;0,700;1,400&family=Inter:wght@400;500;600;700&family=Rock+Salt&display=swap"" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -28,7 +28,7 @@
                 </div>
                 <div class="brand-titles">
                     <h1>Quips UI</h1>
-                    <p>Quips & Cranks 1965 to Webpage User Interface</p>
+                    <p>Wireframing Tool Inspired by Quips & Cranks 1965</p>
                 </div>
             </div>
 
@@ -88,7 +88,7 @@
                                 </svg>
                             </div>
                             <div class="palette-text">
-                                <span class="palette-title">Photo Block</span>
+                                <span class="palette-title">Image</span>
                             </div>
                         </button>
 
@@ -195,9 +195,9 @@
                 <div class="sidebar-tip">
                     <strong>Drafting Shortcuts:</strong><br>
                     &bull; Double-click any block to edit its label.<br>
-                    &bull; Click inside a Sticky Note to type ideas.<br>
                     &bull; <strong>Arrow keys</strong> nudge 1px (<strong>Shift</strong>: 12px / 1p).<br>
-                    &bull; <strong>Ctrl/Cmd+D</strong> duplicates &bull; <strong>Del</strong> removes.
+                    &bull; <strong>Ctrl/Cmd+D</strong> duplicates &bull; <strong>Del</strong> removes.<br><br>
+                    <em>Quips UI was created by Leah Duncan with assistance from Google Gemini.</em><br>
                 </div>
             </aside>
 
@@ -210,7 +210,7 @@
                         <span class="context-type-pill" id="ctx-type">PHOTO BLOCK</span>
 
                         <div class="context-label-group" id="ctx-label-wrapper">
-                            <label for="ctx-label-input">Label / Text:</label>
+                            <label for="ctx-label-input">Block Type:</label>
                             <input type="text" id="ctx-label-input" class="context-input" placeholder="Enter block label..." oninput="handleContextLabelInput(this.value)">
                         </div>
 
@@ -262,7 +262,7 @@
                         <div class="dummy-sheet" id="dummy-sheet">
                             <!-- Top Print-Shop Slug Line -->
                             <div class="sheet-slug-header">
-                                <span>1965 YEARBOOK LAYOUT DUMMY &bull; SINGLE SHEET 45p &times; 60p</span>
+                                <span>1965 YEARBOOK LAYOUT &bull; 45p &times; 60p</span>
                                 <span>1p = 12px</span>
                             </div>
 

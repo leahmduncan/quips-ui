@@ -181,11 +181,11 @@
            ===================================================================== */
         function createBlockData(type, customX = null, customY = null) {
             const defaults = {
-                photo:    { w: 228, h: 168, label: 'Photo Block' },
-                headline: { w: 468, h: 54,  label: 'SECTION HEADLINE' },
-                text:     { w: 222, h: 216, label: 'Body Copy Column' },
-                caption:  { w: 228, h: 42,  label: 'Photo cutline or caption...' },
-                rule:     { w: 468, h: 18,  label: 'Divider Rule' },
+                photo:    { w: 228, h: 168, label: 'Image' },
+                headline: { w: 468, h: 54,  label: 'Section Heading' },
+                text:     { w: 222, h: 216, label: 'Paragraph' },
+                caption:  { w: 228, h: 42,  label: 'Caption' },
+                rule:     { w: 468, h: 18,  label: 'Separator' },
                 sticky:   { w: 204, h: 156, label: '' }
             };
             const cfg = defaults[type] || defaults.photo;
@@ -384,7 +384,7 @@
                         el.style.backgroundPosition = 'center';
                         el.innerHTML = `
                           <div class="photo-header-bar">
-                            <span class="pencil-tag">${escapeHTML(block.label || 'Photo Block')}</span>
+                            <span class="pencil-tag">${escapeHTML(block.label || 'Image')}</span>
                             <span class="pica-readout">${picaDim}</span>
                           </div>
                         `;
@@ -395,7 +395,7 @@
                                 <line x1="${block.w}" y1="0" x2="0" y2="${block.h}" class="photo-line"></line>
                             </svg>
                             <div class="photo-header-bar">
-                                <span class="pencil-tag">${escapeHTML(block.label || 'Photo Block')}</span>
+                                <span class="pencil-tag">${escapeHTML(block.label || 'Image')}</span>
                                 <span class="pica-readout">${picaDim}</span>
                             </div>
                         `;
@@ -403,16 +403,16 @@
                     } else if (block.type === 'headline') {
                         const fontSize = Math.max(14, Math.min(28, Math.round(block.h * 0.44)));
                         el.innerHTML = `
-                            <div class="headline-text" style="font-size: ${fontSize}px;">${escapeHTML(block.label || 'HEADLINE')}</div>
+                            <div class="headline-text" style="font-size: ${fontSize}px;">${escapeHTML(block.label || 'Section Heading')}</div>
                         `;
                     } else if (block.type === 'text') {
                         el.innerHTML = `
-                            <div class="text-col-header">${escapeHTML(block.label || 'Body Copy Column')}</div>
+                            <div class="text-col-header">${escapeHTML(block.label || 'Paragraph')}</div>
                             <div class="ruled-lines-body"></div>
                         `;
                     } else if (block.type === 'caption') {
                         el.innerHTML = `
-                            <div class="caption-text">${escapeHTML(block.label || 'Caption / Cutline')}</div>
+                            <div class="caption-text">${escapeHTML(block.label || 'Caption')}</div>
                         `;
                     } else if (block.type === 'rule') {
                         el.innerHTML = `
@@ -504,60 +504,68 @@
            ===================================================================== */
         let contextLabelBeforeSnapshot = null;
 
-        function updateContextBar() {
-            const idleEl = document.getElementById('context-idle');
-            const activeEl = document.getElementById('context-active');
+function updateContextBar() {
+    const idleEl = document.getElementById('context-idle');
+    const activeEl = document.getElementById('context-active');
 
-            if (!selectedId) {
-                idleEl.style.display = 'flex';
-                activeEl.classList.remove('visible');
-                return;
+    if (!selectedId) {
+        if (idleEl) idleEl.style.display = 'flex';
+        if (activeEl) activeEl.classList.remove('visible');
+        return;
+    }
+
+    const block = blocks.find(b => b.id === selectedId);
+    if (!block) {
+        if (idleEl) idleEl.style.display = 'flex';
+        if (activeEl) activeEl.classList.remove('visible');
+        return;
+    }
+
+    if (idleEl) idleEl.style.display = 'none';
+    if (activeEl) activeEl.classList.add('visible');
+
+    const typeNames = {
+        photo: 'Photo Block',
+        headline: 'Headline',
+        text: 'Body Copy',
+        caption: 'Caption / Cutline',
+        rule: 'Rule / Divider',
+        sticky: 'Sticky Note'
+    };
+
+    const typeEl = document.getElementById('ctx-type');
+    if (typeEl) {
+        typeEl.textContent = typeNames[block.type] || block.type;
+    }
+
+    const labelWrapper = document.getElementById('ctx-label-wrapper');
+    const labelInput = document.getElementById('ctx-label-input');
+
+    if (labelWrapper && labelInput) {
+        if (block.type === 'sticky') {
+            labelWrapper.style.display = 'none';
+        } else {
+            labelWrapper.style.display = 'flex';
+            if (document.activeElement !== labelInput) {
+                labelInput.value = block.label;
             }
-
-            const block = blocks.find(b => b.id === selectedId);
-            if (!block) {
-                idleEl.style.display = 'flex';
-                activeEl.classList.remove('visible');
-                return;
-            }
-
-            idleEl.style.display = 'none';
-            activeEl.classList.add('visible');
-
-            const typeNames = {
-                photo: 'Photo Block',
-                headline: 'Headline',
-                text: 'Body Copy',
-                caption: 'Caption / Cutline',
-                rule: 'Rule / Divider',
-                sticky: 'Sticky Note'
-            };
-
-            document.getElementById('ctx-type').textContent = typeNames[block.type] || block.type;
-
-            const labelWrapper = document.getElementById('ctx-label-wrapper');
-            const labelInput = document.getElementById('ctx-label-input');
-
-            if (block.type === 'sticky') {
-                labelWrapper.style.display = 'none';
-            } else {
-                labelWrapper.style.display = 'flex';
-                if (document.activeElement !== labelInput) {
-                    labelInput.value = block.label;
-                }
-            }
-
-            updateContextMetrics(block);
         }
+    }
 
-        function updateContextMetrics(block) {
-            const xPica = formatPica(block.x);
-            const yPica = formatPica(block.y);
-            const wPica = formatPica(block.w);
-            const hPica = formatPica(block.h);
-            const pctPageW = Math.round((block.w / SHEET_WIDTH) * 100);
-            document.getElementById('ctx-metrics').textContent = `X: ${xPica}  Y: ${yPica}  |  W: ${wPica} (${pctPageW}%) × H: ${hPica}`;
-        }
+    updateContextMetrics(block);
+}
+
+function updateContextMetrics(block) {
+    const metricsEl = document.getElementById('ctx-metrics');
+    if (!metricsEl) return;
+
+    const xPica = formatPica(block.x);
+    const yPica = formatPica(block.y);
+    const wPica = formatPica(block.w);
+    const hPica = formatPica(block.h);
+    const pctPageW = Math.round((block.w / SHEET_WIDTH) * 100);
+    metricsEl.textContent = `X: ${xPica}  Y: ${yPica}  |  W: ${wPica} (${pctPageW}%) × H: ${hPica}`;
+}
 
         function handleContextLabelInput(newVal) {
             if (!selectedId) return;
@@ -573,6 +581,8 @@
 
         document.addEventListener('DOMContentLoaded', () => {
             const ctxInput = document.getElementById('ctx-label-input');
+            if (!ctxInput) return;
+            
             ctxInput.addEventListener('focus', () => {
                 contextLabelBeforeSnapshot = JSON.stringify(blocks);
             });
