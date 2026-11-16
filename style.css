@@ -2,10 +2,10 @@
            DESIGN TOKENS & RESET
            ===================================================================== */
         :root {
-            --desk-bg:#f9e5a9;
+            --desk-bg:#f3eacf;
             --desk-surface: hsl(68, 25%, 28%);
             --desk-panel: #797949;
-            --desk-border: #b0b042;
+            --desk-border: #797949;
             --desk-text: #f6dfc4;
             --desk-muted: #e1c8ac;
             --accent-amber: #E58250;
@@ -16,9 +16,6 @@
             --pica-blue: rgba(84, 128, 164, 0.22);
             --pica-blue-major: rgba(68, 112, 148, 0.38);
             --grease-red: #0BACB2;
-            --sticky-yellow: #cf6530;
-            --sticky-border: #E58250;
-
             --font-ui: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
             --font-typewriter: 'Courier Prime', 'Courier New', Courier, monospace;
             --font-vintage-serif: 'Rock Salt', cursive;
@@ -52,8 +49,7 @@
         }
 
         .top-header {
-            background-color: var(--desk-surface);
-            border-bottom: 1px solid var(--desk-border);
+            background-color: var(--desk-bg);
             padding: 10px 20px;
             display: flex;
             align-items: center;
@@ -93,7 +89,7 @@
             font-family: var(--font-vintage-serif);
             font-size: 2rem;
             font-weight: 800;
-            color: #faf5eb;
+            color: #cf6530;
             letter-spacing: 0.01em;
             white-space: nowrap;
             overflow: hidden;
@@ -102,7 +98,7 @@
 
         .brand-titles p {
             font-size: 0.76rem;
-            color: var(--desk-muted);
+            color: var(--graphite-dark);
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
@@ -130,16 +126,16 @@
             font-size: 0.78rem;
             font-weight: 600;
             cursor: pointer;
-            border: 1px solid var(--desk-border);
-            background-color: #3d2c28;
+            border: 1px solid var(--desk-panel);
+            background-color: var(--desk-panel);
             color: var(--desk-text);
             transition: background-color 0.15s ease, border-color 0.15s ease, transform 0.1s ease, opacity 0.15s ease;
             user-select: none;
         }
 
         .btn:hover:not(:disabled) {
-            background-color: #3f342e;
-            border-color: #5b4d45;
+            background-color: var(--desk-surface);
+            border-color: var(--desk-surface);
         }
 
         .btn:active:not(:disabled) {
@@ -225,7 +221,7 @@
             font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 0.08em;
-            color: var(--desk-muted);
+            color: var(--desk-text);
             display: flex;
             align-items: center;
             justify-content: space-between;
@@ -254,8 +250,7 @@
         }
 
         .palette-item:hover {
-            background-color: #372e29;
-            border-color: #695950;
+            background-color: var(--desk-surface);
         }
 
         .palette-item:active {
@@ -267,23 +262,22 @@
             width: 30px;
             height: 30px;
             border-radius: 6px;
-            background-color: #1e1815;
-            border: 1px solid #493e38;
+            background-color: var(--desk-bg);
+            border: 1px solid var(--desk-muted);
             display: flex;
             align-items: center;
             justify-content: center;
             flex-shrink: 0;
-            color: #e8dccb;
+            color: var(--graphite-dark);
         }
 
         .palette-item.sticky-palette {
-            background-color: rgba(254, 240, 138, 0.08);
-            border-color: rgba(250, 204, 21, 0.34);
+            background-color: var(--desk-panel);
         }
 
         .palette-item.sticky-palette:hover {
-            background-color: rgba(254, 240, 138, 0.15);
-            border-color: rgba(250, 204, 21, 0.58);
+            background-color: var(--desk-surface);
+            border-color: var(--desk-panel);
         }
 
         .palette-item.sticky-palette .palette-icon {
@@ -325,7 +319,7 @@
         }
 
         .guide-toggle:hover {
-            background-color: #342b26;
+            background-color: var(--desk-surface);
         }
 
         .guide-toggle input[type="checkbox"] {
@@ -357,16 +351,12 @@
             margin-top: auto;
             padding: 10px;
             border-radius: 8px;
-            background-color: #261f1b;
-            border: 1px dashed #4a3f39;
+            background-color: var(--desk-bg);
             font-size: 0.7rem;
-            color: var(--desk-muted);
+            color: var(--graphite-dark);
             line-height: 1.45;
         }
 
-        .sidebar-tip strong {
-            color: #e8dcc8;
-        }
 
         /* =====================================================================
            MAIN DRAFTING WORKSPACE & SLIM CONTEXTUAL BAR
@@ -385,7 +375,7 @@
 
         .context-bar {
             min-height: 46px;
-            background-color: #3d2c28;
+            background-color: var(--desk-surface);
             border-bottom: 1px solid var(--desk-border);
             padding: 6px 18px;
             display: flex;
@@ -488,6 +478,7 @@
             display: flex;
             justify-content: center;
             align-items: flex-start;
+            background-color: #996633;
         }
 
         /* =====================================================================

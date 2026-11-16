@@ -17,18 +17,10 @@
              ================================================================= -->
         <header class="top-header">
             <div class="brand-group">
-                <div class="brand-badge" aria-hidden="true">
-                    <!-- Inline SVG Single-Sheet Drafting Icon -->
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-                        <polyline points="14 2 14 8 20 8"></polyline>
-                        <line x1="8" y1="13" x2="16" y2="13"></line>
-                        <line x1="8" y1="17" x2="16" y2="17"></line>
-                    </svg>
-                </div>
+
                 <div class="brand-titles">
                     <h1>Quips UI</h1>
-                    <p>Wireframing Tool Inspired by Quips & Cranks 1965</p>
+                    <p>Layout Tool Inspired by Quips & Cranks 1965</p>
                 </div>
             </div>
 
@@ -56,13 +48,7 @@
                     <span>Export PNG</span>
                 </button>
 
-                <button class="btn btn-primary" onclick="openExportCodeModal()" title="Generate semantic HTML5 & CSS wireframe code (Sticky Notes excluded)">
-                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <polyline points="16 18 22 12 16 6"></polyline>
-                        <polyline points="8 6 2 12 8 18"></polyline>
-                    </svg>
-                    <span>Export Wireframe Code</span>
-                </button>
+                
             </div>
         </header>
 
@@ -237,7 +223,7 @@
                                 <span>Duplicate</span>
                             </button>
 
-                            <button class="btn btn-sm btn-danger" onclick="deleteSelected()" title="Delete (Backspace / Delete)">
+                            <button class="btn btn-sm btn-primary" onclick="deleteSelected()" title="Delete (Backspace / Delete)">
                                 <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                     <polyline points="3 6 5 6 21 6"></polyline>
                                     <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
@@ -332,7 +318,7 @@
     <div class="modal-backdrop" id="snapshot-modal" role="dialog" aria-modal="true" aria-labelledby="snapshot-modal-title">
         <div class="modal-card">
             <div class="modal-header">
-                <h2 id="snapshot-modal-title">Export PNG Snapshot (45p &times; 60p High-DPI)</h2>
+                <h2 id="snapshot-modal-title">Export</h2>
                 <button class="modal-close" onclick="closeModal('snapshot-modal')" aria-label="Close modal">&times;</button>
             </div>
             <div class="modal-body">
@@ -352,7 +338,7 @@
                         <polyline points="7 10 12 15 17 10"></polyline>
                         <line x1="12" y1="15" x2="12" y2="3"></line>
                     </svg>
-                    <span>Download 1965-layout-dummy-45x60p.png</span>
+                    <span>Download PNG</span>
                 </button>
                 <button class="btn" onclick="closeModal('snapshot-modal')">Cancel</button>
             </div>
